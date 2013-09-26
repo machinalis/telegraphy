@@ -1,7 +1,7 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.core.management.base import BaseCommand, CommandError
 from django.utils import autoreload
-from meerkat import Gateway
+from telegraphy import Gateway
 
 class Command(BaseCommand):
     args = '<p_id p_id ...>'
@@ -12,9 +12,9 @@ class Command(BaseCommand):
 
     def inner_run(self, *args, **options):
         from django.conf import settings
-        if not hasattr(settings, 'MEERKAT_CONF'):
-            raise ImproperlyConfigured("Missing meerkat configuration in "
+        if not hasattr(settings, 'TELEGRAPHY_CONF'):
+            raise ImproperlyConfigured("Missing telegraphy configuration in "
                 "settings")
 
-        gateway = Gateway.from_settings(settings.MEERKAT_CONF)
+        gateway = Gateway.from_settings(settings.TELEGRAPHY_CONF)
         gateway.run()

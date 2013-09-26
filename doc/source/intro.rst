@@ -1,7 +1,7 @@
-The Meerkat framework
+The telegraphy framework
 =====================
 
-The Meerkat project comprises three main components:
+The telegraphy project comprises three main components:
  * El Gateway incluye: una API (provee lo necesario para definir eventos, etc), un servidor tipo web-sockets (SS, en una primera instancia Tornado+SockJS) y un componente de IPC que conecta la API con el SS (inicialmente 0MQ).
  * A JS API: implements a custom, simple protocol, to communicate with the gateway. It can subscribe to specific type of events, receive such events as they happen server-side, query for metadata of available event's types, etc.
  * A Django app: provides a class-based api that provides a means to extend db Models with features to generate events. Some default events related to db operations (create, update, delete) are automatically inherited (configurable), relying on Django-signals. Other custom events can be created.
@@ -9,7 +9,7 @@ The Meerkat project comprises three main components:
 Gateway
 ********
 
-_meerkat_'s API allows to define events by inheriting from the base meerkat.Event class. Other specialized type of events are provided: guaranteed delivery, with TTL, etc.
+_telegraphy_'s API allows to define events by inheriting from the base telegraphy.Event class. Other specialized type of events are provided: guaranteed delivery, with TTL, etc.
 
 When running the RT server, all the existing _events_ (automatic discovery mechanism? filename based?) are automatically "exposed" through our custom, websockets-based protocol, thus easily accesible from the JS API.
 
@@ -51,7 +51,7 @@ security issues. Since Gateway process may not run in the same context (port, ip
 rely on it for authentication.
 
 In order to authenticate clients we must pre share a secret *ws auth token*.
-This token is created by the gateway whenever a page that uses meerkat template tag is rendered.
+This token is created by the gateway whenever a page that uses telegraphy template tag is rendered.
 These tokens are short lived, they expire once the websocket connection has been established.
 
 If the client reconnects it must send a CONNECT command
