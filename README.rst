@@ -1,5 +1,5 @@
-Meerkat
-=======
+Teelgraphy
+===========
 
 Project home: http://github.com/...
 
@@ -20,7 +20,7 @@ Just get it:
 
 .. code-block:: none
 
-    pip install meerkat
+    pip install telegraphy
 
 
 You will need to have pip installed on your system. On linux install the
@@ -31,7 +31,7 @@ Also, if you are on linux and not working with a virtualenv, remember to use
 Examples
 ========
 
-Meerkat allows you to define problems and look for the solution with
+telegraphy allows you to define problems and look for the solution with
 different strategies. Another samples are in the ``samples`` directory, but
 here is an easy one.
 
@@ -80,7 +80,7 @@ You can read the docs online `here <http://simpleai.readthedocs.org/en/latest/>`
 Help and discussion
 ===================
 
-Join us at the Meerkat `google group <http://groups.google.com/group/simpleai>`_.
+Join us at the telegraphy `google group <http://groups.google.com/group/simpleai>`_.
 
 
 Authors

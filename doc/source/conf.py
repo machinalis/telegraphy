@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# meerkat documentation build configuration file, created by
+# telegraphy documentation build configuration file, created by
 # sphinx-quickstart on Tue Sep 24 15:51:53 2013.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -40,7 +40,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'meerkat'
+project = u'telegraphy'
 copyright = u'2013, Carlos de la Torre, Nahuel Defossé'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -164,7 +164,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'meerkatdoc'
+htmlhelp_basename = 'telegraphydoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -183,7 +183,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'meerkat.tex', u'meerkat Documentation',
+  ('index', 'telegraphy.tex', u'telegraphy Documentation',
    u'Carlos de la Torre, Nahuel Defossé', 'manual'),
 ]
 
@@ -213,7 +213,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'meerkat', u'meerkat Documentation',
+    ('index', 'telegraphy', u'Telegraphy Documentation',
      [u'Carlos de la Torre, Nahuel Defossé'], 1)
 ]
 
@@ -227,8 +227,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'meerkat', u'meerkat Documentation',
-   u'Carlos de la Torre, Nahuel Defossé', 'meerkat', 'One line description of project.',
+  ('index', 'telegraphy', u'Telegraphy Documentation',
+   u'Carlos de la Torre, Nahuel Defossé', 'telegraphy', 'One line description of project.',
    'Miscellaneous'),
 ]
 

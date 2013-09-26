@@ -1,5 +1,5 @@
-MEERKAT_CONF = {
-    'ENGINE': 'meerkat.gateway.zmqtornado.ZmqSockJSTornadoGateway',
+TELEGRAPHY_CONF = {
+    'ENGINE': 'telegraphy.gateway.zmqtornado.ZmqSockJSTornadoGateway',
     'PORT': 9999,
     'URL': '/echo',
 

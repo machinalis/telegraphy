@@ -1,5 +1,5 @@
 # ZMQ + Tornado
-from meerkat import Gateway
+from telegraphy import Gateway
 from tornado import web, ioloop
 from sockjs.tornado import SockJSRouter, SockJSConnection
 

@@ -1,6 +1,15 @@
 $(function() {
-        
+
+    function MeerkatMessage (message, args) {
+        this.message = message;
+        this.args = args;
+        this.serialize = function() {
+            return JSON.stringify({message: this.message, args: this.args});
+        };
+    };
+
     var Meerkat = {
+        protocol: {CONNECT: 'connect'},
         transports: ["websocket"],
         conn: null,
 
@@ -8,13 +17,10 @@ $(function() {
             return this.conn != null;
         },
 
-        openNewSocket: function (url){
+        openNewSocket: function (url, options){
             if (!this.isConnected()) {
                 this.conn = new SockJS(url, this.transports);
             }
-        },
-
-        connect: function (options){
             // PRE: is connected
             if (options.onOpen){
                 this.conn.onopen = options.onOpen;
@@ -24,6 +30,15 @@ $(function() {
             }
         },
 
+        connect: function (){
+            var protocolMsg = this.getConnectionMessage('some-uui-auth-string');
+            this.sendMessage(protocolMsg);
+        },
+
+        getConnectionMessage: function (auth_token) {
+            return new MeerkatMessage('connect', {auth: auth_token});
+        },
+
         disconnect: function() {
             if (this.conn != null) {
                 this.conn.close();
@@ -31,8 +46,9 @@ $(function() {
             }
         },
 
-        send: function(data){
-            this.conn.send(data);
+        sendMessage: function(msg){
+            console.log(msg, msg.serialize());
+            this.conn.send(msg.serialize());
         }
     };
 
@@ -44,11 +60,6 @@ $(function() {
 
 
     function connect() {
-        Meerkat.openNewSocket('http://localhost:9999/echo');
-        Meerkat.transports = $('#protocols input:checked').map(
-            function(){
-                return $(this).attr('id');
-            }).get();
         var options = {
             onOpen: function() {
                 log('Connected.');
@@ -60,7 +71,12 @@ $(function() {
             }
         }
         log('Connecting...');
-        Meerkat.connect(options);
+        Meerkat.transports = $('#protocols input:checked').map(
+            function(){
+                return $(this).attr('id');
+            }).get();
+        Meerkat.openNewSocket('http://localhost:9999/echo', options);
+        Meerkat.connect();
     }
 
     function disconnect() {
