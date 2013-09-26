@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from importlib import import_module
-from funtools import wraps
+from functools import wraps
 import uuid
 
 
@@ -44,8 +44,8 @@ class Gateway(object):
     # Known events name - event class
     registry = {}
 
-    @for_webapp
     @classmethod
+    @for_webapp
     def register_event(cls, event_class):
         '''Register a new event class in the Gateway'''
         pass
@@ -84,8 +84,8 @@ class Gateway(object):
             subs = self.subscriptions.setdefault(event_name, [])
             subs.append(token)
 
-    @for_webapp
     @classmethod
+    @for_webapp
     def autodiscover(cls):
         '''Finds event classes accross project and auto register them'''
         pass
