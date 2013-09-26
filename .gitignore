@@ -4,3 +4,6 @@
 *~
 local_settings.py
 doc/build/
+.swp
+.swo
+*.sublime-*
