@@ -1,79 +1,102 @@
 $(function() {
-  var conn = null;
+        
+    var Meerkat = {
+        transports: ["websocket"],
+        conn: null,
 
-  function log(msg) {
-    var control = $('#log');
-    control.html(control.html() + msg + '<br/>');
-    control.scrollTop(control.scrollTop() + 1000);
-  }
+        isConnected: function (){
+            return this.conn != null;
+        },
 
-  function connect() {
-    disconnect();
+        openNewSocket: function (url){
+            if (!this.isConnected()) {
+                this.conn = new SockJS(url, this.transports);
+            }
+        },
 
-    var transports = $('#protocols input:checked').map(function(){
-        return $(this).attr('id');
-    }).get();
+        connect: function (options){
+            // PRE: is connected
+            if (options.onOpen){
+                this.conn.onopen = options.onOpen;
+            }
+            if (options.onClose){
+                this.conn.onclose = options.onClose;
+            }
+        },
 
-    //conn = new SockJS('http://' + window.location.host + '/echo', transports);
-    conn = new SockJS('http://localhost:9999/echo', transports);
+        disconnect: function() {
+            if (this.conn != null) {
+                this.conn.close();
+                this.conn = null;
+            }
+        },
 
-    log('Connecting...');
-
-    conn.onopen = function() {
-      log('Connected.');
-      update_ui();
+        send: function(data){
+            this.conn.send(data);
+        }
     };
 
-    conn.onmessage = function(e) {
-      log('Received: ' + e.data);
-    };
-
-    conn.onclose = function() {
-      log('Disconnected.');
-      conn = null;
-      update_ui();
-    };
-  }
-
-  function disconnect() {
-    if (conn != null) {
-      log('Disconnecting...');
-
-      conn.close();
-      conn = null;
-
-      update_ui();
-    }
-  }
-
-  function update_ui() {
-    var msg = '';
-
-    if (conn == null || conn.readyState != SockJS.OPEN) {
-      $('#status').text('disconnected');
-      $('#connect').text('Connect');
-    } else {
-      $('#status').text('connected (' + conn.protocol + ')');
-      $('#connect').text('Disconnect');
-    }
-  }
-
-  $('#connect').click(function() {
-    if (conn == null) {
-      connect();
-    } else {
-      disconnect();
+    function log(msg) {
+        var control = $('#log');
+        control.html(control.html() + msg + '<br/>');
+        control.scrollTop(control.scrollTop() + 1000);
     }
 
-    update_ui();
-    return false;
-  });
 
-  $('form').submit(function() {
-    var text = $('#text').val();
-    log('Sending: ' + text);
-    conn.send(text);
-    $('#text').val('').focus();
-    return false;
-  });
+    function connect() {
+        Meerkat.openNewSocket('http://localhost:9999/echo');
+        Meerkat.transports = $('#protocols input:checked').map(
+            function(){
+                return $(this).attr('id');
+            }).get();
+        var options = {
+            onOpen: function() {
+                log('Connected.');
+                update_ui();
+            },
+            onClose: function() {
+                log('Disconnected.');
+                update_ui();
+            }
+        }
+        log('Connecting...');
+        Meerkat.connect(options);
+    }
+
+    function disconnect() {
+        log('Disconnecting...');
+        Meerkat.disconnect();
+        update_ui();
+    }
+
+    function update_ui() {
+        var msg = '';
+
+        if (!Meerkat.isConnected()) {
+            $('#status').text('disconnected');
+            $('#connect').text('Connect');
+        } else {
+            $('#status').text('connected (' + Meerkat.conn.protocol + ')');
+            $('#connect').text('Disconnect');
+        }
+    }
+
+    $('#connect').click(function() {
+        if (!Meerkat.isConnected()) {
+            connect();
+        } else {
+            disconnect();
+        }
+
+        update_ui();
+        return false;
+    });
+
+    $('form').submit(function() {
+        var text = $('#text').val();
+        log('Sending: ' + text);
+        Meerkat.send(text);
+        $('#text').val('').focus();
+        return false;
+    });
 });
