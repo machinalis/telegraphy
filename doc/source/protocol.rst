@@ -13,46 +13,99 @@ Provides some security machanisms for client authentication.
 Message Types
 *************
 
-* MANAGEMENT
-    *   This type of messages have sequence number, and must be acknowledged by the
-        other end.
+.. _management-message-type:
 
-        Message Structure
-        *****************
-        Messages are JSON structures with the folowing format:
+MANAGEMENT
+==========
 
-        .. code-block:: javascript
 
-            // Request
-            {
-                message: "MESSAGE_TYPE",
-                id: 0,
-                args: {}
-            }
+This type of messages have sequence number, and must be acknowledged by the
+other end.
 
-            // Response
-            {
-                success: true,
-                status: 'RESULT_STATE',
-                id: 0,
-                data: {message: "", ...}
-            }
+Messages are JSON structures with the folowing format:
 
-* EVENT
-    * This type of message do not have any response.
+.. code-block:: javascript
 
+	// Request
+	{
+		message: "MESSAGE_TYPE",
+		id: 0,
+		args: {}
+	}
+
+	// Response
+	{
+		success: true,
+		status: 'RESULT_STATE',
+		id: 0,
+		data: {message: "", ...}
+	}
+
+The ``id`` argument is sent with every message. Response to that message must have
+the same ``id``. Messages should not be queued.
+
+``id`` starts from 0 and is incremented with each response by the client.
+
+.. _event-message-type:
+
+EVENT
+=====
+
+This type of message do not have any response, and are sent from the server sponntaneously.
+
+They must have this structure:
+
+	.. code-block:: javascript
+
+	    {
+	    	event: "event.name"
+
+	    }
 
 
 ``args`` depend on the message type. ``MESSAGE_TYPE`` is one of the folowing::
 
+Mangement and Event Message Type
+********************************
 
-CONNECT(auth_token)
-*******************
+CONNECT
+*******
 
-Type: MANAGEMENT
+Type: :ref:`management-message-type`
 
-Has the folowing responses:
+Arguments:
+
+auth_token
+
+	A string provided by the Gateway by another mean. Tipically bundled in the HTML.
+
+Example:
+
+	.. code-block:: javascript
+
+		// Client to Server
+	    {
+	    	message: "CONNECT",
+	    	id: 0, // In cold start should be 0
+	    	args: {
+	    		auth_token: 'aabbccddeeff'
+	    	}
+	    }
+	    // Server to Client
+	    {
+	    	success: true,
+	    	status: "CONNECTED",
+	    	id: 0,
+	    	data: {
+	    		session_token: 'rrssttuuvvww' // Could be not provided
+	    	}
+
+	    }
+
 Auth_token can be an empty string if user authentication is not needed.
+
+
+
 Possible result states are the following:
 	* CONNECTED
 		* The auth token must be valid. A session token will probably be returned.
@@ -67,10 +120,33 @@ Possible result states are the following:
 
 RECONNECT(session_token)
 ************************
-	* RECONNECTED
-		* The session token must be valid and the client host must
-		  be the same before reconnection.
-		* Returns the existing subscriptions.
+
+Type: :ref:`management-message-type`
+
+Example:
+
+	.. code-block:: javascript
+
+		// Client > Server
+
+	    {
+	    	message: 'RECONNECT',
+	    	id: 100,
+	    	session_token: 'rrssttuuvvww'
+	    }
+
+	    // Server > Client
+
+	    {
+	    	message: 'CONNECTED',
+	    	id: 100
+	    	// No new session token has to be provided
+	    	subscriptions: []
+	    }
+
+
+The session token must be valid and the client host must be the same before reconnection.
+Returns the existing subscriptions list.
 
 SUBSCRIBE(event_name, filters, permanent, lazy=false)
 ******************************************************
