@@ -8,12 +8,14 @@ Welcome to meerkat's documentation!
 
 Contents:
 
+:doc:`Introduction (this page)<index>`
+
 :doc:`intro`
 
 .. toctree::
    :maxdepth: 2
 
-
+.. include:: ../../README.rst
 
 Indices and tables
 ==================
