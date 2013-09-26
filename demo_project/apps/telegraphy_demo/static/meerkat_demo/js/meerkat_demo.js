@@ -1,25 +1,38 @@
 $(function() {
 
-    function MeerkatMessage (message, args) {
+    function TelegraphyMessage (message, messageId, args) {
         this.message = message;
         this.args = args;
+        this.messageId = messageId;
         this.serialize = function() {
             return JSON.stringify({message: this.message, args: this.args});
         };
     };
 
-    var Meerkat = {
-        protocol: {CONNECT: 'connect'},
-        transports: ["websocket"],
-        conn: null,
+    function getConnectionMessage(auth_token) {
+        return new TelegraphyMessage('connect', {auth: auth_token});
+    };
 
+    var Telegraph = function (authorizationToken, options) {
+        options = options || {};
+        this.protocol = {CONNECT: 'connect'};
+        this.state = 'DISCONNECTED';
+        this.transports = options.transports ? options.transports : ["websocket"];
+        this.conn = new SockJS(url, this.transports);
+        this.state = 'DISCONNECTED';
+        var protocolMsg = getConnectionMessage('some-uui-auth-string');
+        this.conn.send(protocolMsg.serialize());
+        this.conn.onopen = this.
+    };
+
+    $.extend(Telegraph.prototype, {
         isConnected: function (){
             return this.conn != null;
         },
 
         openNewSocket: function (url, options){
             if (!this.isConnected()) {
-                this.conn = new SockJS(url, this.transports);
+
             }
             // PRE: is connected
             if (options.onOpen){
@@ -30,27 +43,11 @@ $(function() {
             }
         },
 
-        connect: function (){
-            var protocolMsg = this.getConnectionMessage('some-uui-auth-string');
-            this.sendMessage(protocolMsg);
-        },
-
-        getConnectionMessage: function (auth_token) {
-            return new MeerkatMessage('connect', {auth: auth_token});
-        },
-
-        disconnect: function() {
-            if (this.conn != null) {
-                this.conn.close();
-                this.conn = null;
-            }
-        },
-
         sendMessage: function(msg){
             console.log(msg, msg.serialize());
             this.conn.send(msg.serialize());
         }
-    };
+    });
 
     function log(msg) {
         var control = $('#log');
