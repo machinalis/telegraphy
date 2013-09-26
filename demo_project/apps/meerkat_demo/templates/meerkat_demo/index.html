@@ -1,0 +1,56 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+  <script src="http://cdn.sockjs.org/sockjs-0.3.min.js"></script>
+  <script type="text/javascript" src="{% static 'meerkat_demo/js/meerkat_demo.js' %}"></script>
+
+</head>
+<body>
+<h3>Chat!</h3>
+<div id="protocols" style="float: right">
+  <ul>
+    <li>
+      <input id="websocket" type="checkbox" value="websocket" checked="checked"></input>
+      <label for="websocket">websocket</label>
+    </li>
+    <li>
+      <input id="xhr-streaming" type="checkbox" value="xhr-streaming" checked="checked"></input>
+      <label for="xhr-streaming">xhr-streaming</label>
+    </li>
+    <li>
+      <input id="iframe-eventsource" type="checkbox" value="iframe-eventsource" checked="checked"></input>
+      <label for="iframe-eventsource">iframe-eventsource</label>
+    </li>
+    <li>
+      <input id="iframe-htmlfile" type="checkbox" value="iframe-htmlfile" checked="checked"></input>
+      <label for="iframe-htmlfile">iframe-htmlfile</label>
+    </li>
+    <li>
+      <input id="xhr-polling" type="checkbox" value="xhr-polling" checked="checked"></input>
+      <label for="xhr-polling">xhr-polling</label>
+    </li>
+    <li>
+      <input id="iframe-xhr-polling" type="checkbox" value="iframe-xhr-polling" checked="checked"></input>
+      <label for="iframe-xhr-polling">iframe-xhr-polling</label>
+    </li>
+    <li>
+      <input id="jsonp-polling" type="checkbox" value="jsonp-polling" checked="checked"></input>
+      <label for="jsonp-polling">jsonp-polling</label>
+    </li>
+  </ul>
+</div>
+
+<div>
+  <a id="connect" href="#">Connect</a>&nbsp;|&nbsp;Status: <span id="status">disconnected</span>
+</div>
+<div id="log" style="width: 60em; height: 20em; overflow:auto; border: 1px solid black">
+</div>
+<form id="chatform">
+  <input id="text" type="text" />
+  <input type="submit" />
+</form>
+</body>
+</html>
