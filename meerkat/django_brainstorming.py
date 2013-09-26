@@ -6,14 +6,14 @@ gateway = Gateway('foo', transport=ZMQTransport(settings.TRANSPORTS['foo']))
 
 
 class MyEvent(DjangoEvent):
-	name = 'update'
+    name = 'update'
 
 
 
 class MyModelEvent(DjangoModelEvent):
-	model = User
-	signal = ('pre_delete', 'post_save')
-	fields = ('email', )
+    model = User
+    signal = ('pre_delete', 'post_save')
+    fields = ('email', )
 
 # al cliente
 {'signal': 'pre_delete', 'data': {'email': 'new@server.com'}}

@@ -13,8 +13,8 @@ class Command(BaseCommand):
     def inner_run(self, *args, **options):
         from django.conf import settings
         if not hasattr(settings, 'MEERKAT_CONF'):
-        	raise ImproperlyConfigured("Missing meerkat configuration in "
-        		"settings")
+            raise ImproperlyConfigured("Missing meerkat configuration in "
+                "settings")
 
         gateway = Gateway.from_settings(settings.MEERKAT_CONF)
         gateway.run()
