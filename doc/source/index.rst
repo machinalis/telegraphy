@@ -12,8 +12,10 @@ Contents:
 
 :doc:`intro`
 
+:doc:`protocol`
+
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
 .. include:: ../../README.rst
 
