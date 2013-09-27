@@ -2,9 +2,8 @@
 {% load telegraphy_tags %}
 <html>
    <head>
-
-      <!-- include AutobahnJS .. that's all you need -->
-      <script src="http://autobahn.s3.amazonaws.com/js/autobahn.min.js"></script>
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+      {% telegraphy_scripts %}
 
       <script>
          // WAMP session object
@@ -50,10 +49,15 @@
 
             // Call a remote procedure
             //
-            sess.call("http://localhost:9000/telegraphy#authenticate", 23, 7).then(
+            if (token.indexOf('ERROR') == 0) {
+              alert(token);
+              return;
+            }
+            sess.call("http://localhost:9000/telegraphy#authenticate", token, null).then(
                function (res) {
                   // RPC returned successfully
                   console.log("Authenticate result: " + res);
+                  $('#status').text('Authenticated!');
                },
                function (error) {
                   // An error occured:
@@ -80,14 +84,14 @@
       </script>
    </head>
    <body>
-      <h1>RPCs with AutobahnJS - Example 1</h1>
+      <h1>Telegraphy Authentication test</h1>
       <noscript>
          <span style="color: #f00; font-weight: bold;">
             You need to turn on JavaScript.
          </span>
       </noscript>
       <p>
-         Open development console (press F12) to watch.
+         Status: <span id="status">Authenticating...</span>
       </p>
    </body>
  </html>
