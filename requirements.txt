@@ -1,4 +1,9 @@
 Django==1.5
+Twisted==13.1.0
+autobahn==0.5.14
+ipython==1.1.0
 pyzmq==13.1.0
 sockjs-tornado==1.0.0
 tornado==3.1.1
+wsgiref==0.1.2
+zope.interface==4.0.5
