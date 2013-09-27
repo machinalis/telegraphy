@@ -12,7 +12,7 @@ Contents:
 
 :doc:`intro`
 
-:doc:`protocol`
+:doc:`wamp`
 
 .. toctree::
    :maxdepth: 3

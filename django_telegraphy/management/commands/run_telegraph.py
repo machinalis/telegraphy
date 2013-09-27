@@ -8,7 +8,10 @@ class Command(BaseCommand):
     help = 'Closes the specified poll for voting'
 
     def handle(self, *args, **options):
-        autoreload.main(self.inner_run, args, options)
+        # TODO: Make this work with twisted
+        #autoreload.main(self.inner_run, args, options)
+        self.inner_run(*args, **options)
+
 
     def inner_run(self, *args, **options):
         from django.conf import settings

@@ -64,6 +64,9 @@ class Gateway(object):
         '''Called periodically'''
         pass
 
+    def verify_auth_token(self, auth_token):
+        return True
+
     @for_client
     def on_connect(self, web_socket, auth_token, session_token):
         '''Called when a Client sends CONNECT request

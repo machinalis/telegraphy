@@ -1,6 +1,4 @@
 TELEGRAPHY_CONF = {
-    'ENGINE': 'telegraphy.gateway.zmqtornado.ZmqSockJSTornadoGateway',
-    'PORT': 9999,
-    'URL': '/echo',
-
+    'ENGINE': 'telegraphy.gateway.txwamp.TxWAMPGateway',
+    'URL': 'ws://localhost:9000',
 }
