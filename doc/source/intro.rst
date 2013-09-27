@@ -6,6 +6,31 @@ The telegraphy project comprises three main components:
  * A JS API: implements a custom, simple protocol, to communicate with the gateway. It can subscribe to specific type of events, receive such events as they happen server-side, query for metadata of available event's types, etc.
  * A Django app: provides a class-based api that provides a means to extend db Models with features to generate events. Some default events related to db operations (create, update, delete) are automatically inherited (configurable), relying on Django-signals. Other custom events can be created.
 
+Telegraphy
+**********
+
+    - Real Time Events
+        - Authentication
+        - Subscription handling
+            - Public vs Authnticated Events
+            - Subscription management (client or event based)
+        - Persistant Subscriptions
+        - Event management
+            - Class based event definition
+            - Event query language
+                - Performance
+                - Simplified client side subscription handling
+                - Easy channel emulation
+
+
+Django Telegraphy
+*****************
+    - Management command for server (run with minimal settings)
+    - Automatic model based CUD events (Create, Update, Delete)
+    - Custom Event definitions
+    - Template tags for easy configuration
+
+
 Gateway
 ********
 
