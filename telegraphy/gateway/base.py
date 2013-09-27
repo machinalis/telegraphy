@@ -26,6 +26,8 @@ class AuthToken(object):
     def is_valid(self):
         return (self.creation_time + self.expiration) >= datetime.now()
 
+    def __str__(self):
+        return str(self.value)
 
 class Transport(object):
 
@@ -54,8 +56,10 @@ class Gateway(object):
 
     @for_webapp
     def get_auth_token(self):
-        '''Called from Django'''
-        pass
+        '''Called from Web Application'''
+        token = AuthToken()
+        self.auth_tokens.append(token)
+        return str(token)
 
     def expire_auth_token(self, auth_token):
         pass

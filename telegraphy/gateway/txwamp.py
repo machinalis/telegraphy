@@ -1,14 +1,14 @@
 
 from telegraphy.gateway import Gateway
 
-from twisted.internet import reactor, defer
-from twisted.web.server import Site
-from twisted.web.static import File
+from twisted.internet import reactor  # , defer
 
 from autobahn.websocket import listenWS
 from autobahn.wamp import exportRpc, \
     WampServerFactory, \
     WampServerProtocol
+from twisted.web import xmlrpc, server
+from urlparse import urlparse
 
 
 class TelegraphyConnection(WampServerProtocol):
@@ -29,35 +29,54 @@ class TelegraphyConnection(WampServerProtocol):
             return "OK"
         # TODO: Return error
 
+
 class GatewayWampServerFactory(WampServerFactory):
+
     def __init__(self, *args, **kwargs):
         self.gateway = kwargs.pop('gateway')
         WampServerFactory.__init__(self, *args, **kwargs)
-
 
     def buildProtocol(self, addr):
         protocol = WampServerFactory.buildProtocol(self, addr)
         protocol.gateway = self.gateway
         return protocol
 
+
+class WebAppXMLRPCInterface(xmlrpc.XMLRPC):
+
+    """Web Application interface"""
+
+    def __init__(self, *args, **kwargs):
+        self.gateway = kwargs.pop('gateway')
+        xmlrpc.XMLRPC.__init__(self, *args, **kwargs)
+
+    def xmlrpc_get_auth_token(self):
+        """Generate auth token"""
+        return self.gateway.get_auth_token()
+
+
 class TxWAMPGateway(Gateway):
+
+    """Twitsed implementation of Gateway over WAMP protocol"""
 
     def __init__(self, settings):
         #self.port = settings.get('PORT', 9000)
         self.url = settings.get('URL', "ws://localhost:9000")
         self.debug = settings.get('DEBUG', False)
+        self.rpc_url = settings.get('RPC_URL', 'http://localhost:4000')
+        self.xmlrpc_port = urlparse(self.rpc_url).port
 
     def run(self):
         factory = GatewayWampServerFactory(self.url,
-                                            debugWamp=self.debug,
-                                            gateway=self
-                                            )
+                                           debugWamp=self.debug,
+                                           gateway=self
+                                           )
         factory.protocol = TelegraphyConnection
         factory.setProtocolOptions(allowHixie76=True)
         listenWS(factory)
 
-        webdir = File(".")
-        web = Site(webdir)
-        reactor.listenTCP(8080, web)
+        r = WebAppXMLRPCInterface(gateway=self)
+
+        reactor.listenTCP(self.xmlrpc_port, server.Site(r))
 
         reactor.run()

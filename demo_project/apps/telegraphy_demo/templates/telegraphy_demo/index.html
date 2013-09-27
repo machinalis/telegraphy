@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load telegraphy_tags %}
 <html>
    <head>
 
@@ -8,6 +9,7 @@
       <script>
          // WAMP session object
          var sess = null;
+         var token = "{% auth_token %}";
 
          window.onload = function() {
 
@@ -51,14 +53,14 @@
             sess.call("http://localhost:9000/telegraphy#authenticate", 23, 7).then(
                function (res) {
                   // RPC returned successfully
-                  console.log("RPC result: " + res);
+                  console.log("Authenticate result: " + res);
                },
                function (error) {
                   // An error occured:
                   //    error.uri      : The URI of the error
                   //    error.desc     :  Human readable, for developers and logging
                   //    error.details  :  Any error details (optional)
-                  console.log("RPC error: " + error.desc);
+                  console.log("Authenticate error: " + error.desc);
                }
             );
 
