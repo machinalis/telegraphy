@@ -1,13 +1,47 @@
-The telegraphy framework
-=====================
+=======================
+The Telegraphy Project
+=======================
 
-The telegraphy project comprises three main components:
- * El Gateway incluye: una API (provee lo necesario para definir eventos, etc), un servidor tipo web-sockets (SS, en una primera instancia Tornado+SockJS) y un componente de IPC que conecta la API con el SS (inicialmente 0MQ).
- * A JS API: implements a custom, simple protocol, to communicate with the gateway. It can subscribe to specific type of events, receive such events as they happen server-side, query for metadata of available event's types, etc.
- * A Django app: provides a class-based api that provides a means to extend db Models with features to generate events. Some default events related to db operations (create, update, delete) are automatically inherited (configurable), relying on Django-signals. Other custom events can be created.
+This project is about making the *real-time web* easier for the Django developers (and to Python web-developers in general).
 
-Telegraphy
+In a very general way, the issue we want to solve is **How can I easily receive and handle server-side generated events, on the frontend?**.
+
+There's a lot going on about this. There are many standards, protocols, tools, services and sophisticated frameworks related to this issue.
+But most of them have at least one of the following problems:
+
+    - They don't solve the whole problem
+    - They are not easy to use.
+    - They are not well documented.
+
+Therefore, our main objectives are to provide:
+    - well documented and tested tools,
+    - that are simple to install and use,
+    - which rely on open standards and protocols,
+    - to emmit and handle asynchronous, server-side events in real-time.
+
+
+Components
 **********
+
+The Telegraphy project's architecture has three main components:
+ * A web-application that registers and emits events. The current project includes a very powerful `Django app`_.
+ * A Gateway_ is an scalable, high-performance, asynchronous, networking engine.
+ * A `client api`_ which talks `WAMP <http://wamp.ws//>`_ (through a WebSocket) with a *Gateway*.
+   This is normally a JavaScript loaded from a web-page. An API is provided, based on `AutobahnJS <http://autobahn.ws/js>`_.
+
+.. image:: _static/architecture-protocol-stack.png
+
+.. _gateway:
+
+Gateway
+********
+
+The gateway has the responsability to assure continuous service. Changes in configuration or events definitions must be transparent for the client (if possible). Otehrwise, specific resources muts be design in order to be able to implement client-side mechanisms to remain "connected" (reconnect, etc).
+
+Client representatives identification: on connection, the Gateway provides a unique identifier (token). The representatives saves the token in a cookie. The cookie has an expiration time defined by the Gateway.
+
+Persitent subscriptions: a client may decide that a given subscription to an event is 'permanent'. The subscription mechanism provided by the protocol must include some parameter to indicate this situation.
+
 
     - Real Time Events
         - Authentication
@@ -22,6 +56,7 @@ Telegraphy
                 - Simplified client side subscription handling
                 - Easy channel emulation
 
+.. _Django app:
 
 Django Telegraphy
 *****************
@@ -30,22 +65,12 @@ Django Telegraphy
     - Custom Event definitions
     - Template tags for easy configuration
 
+This module allows to define events by inheriting from a base telegraphy.Event class.
+Different specialized type of events are provided: guaranteed delivery, with TTL, etc.
 
-Gateway
-********
 
-_telegraphy_'s API allows to define events by inheriting from the base telegraphy.Event class. Other specialized type of events are provided: guaranteed delivery, with TTL, etc.
 
-When running the RT server, all the existing _events_ (automatic discovery mechanism? filename based?) are automatically "exposed" through our custom, websockets-based protocol, thus easily accesible from the JS API.
-
-The gateway has the responsability to assure continuous service. Changes in configuration or events definitions must be transparent for the client (if possible). Otehrwise, specific resources muts be design in order to be able to implement client-side mechanisms to remain "connected" (reconnect, etc).
-
-Client representatives identification: on connection, the Gateway provides a unique identifier (token). The representatives saves the token in a cookie. The cookie has an expiration time defined by the Gateway.
-
-Persitent subscriptions: a client may decide that a given subscription to an event is 'permanent'. The subscription mechanism provided by the protocol must include some parameter to indicate this situation.
-
-Auth:
-
+.. _client api:
 
 JavaScript API
 ****************

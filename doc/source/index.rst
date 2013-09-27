@@ -14,10 +14,12 @@ Contents:
 
 :doc:`wamp`
 
+:doc:`examples`
+
 .. toctree::
    :maxdepth: 3
 
-.. include:: ../../README.rst
+.. include:: README.rst
 
 Indices and tables
 ==================
