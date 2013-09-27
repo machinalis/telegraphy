@@ -2,7 +2,11 @@
 {% load telegraphy_tags %}
 <html>
    <head>
+      <title>Telegraphy Authentication Test</title>
       <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+      <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+      <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
       {% telegraphy_scripts %}
 
       <script>
@@ -84,6 +88,7 @@
       </script>
    </head>
    <body>
+      <div class="container">
       <h1>Telegraphy Authentication test</h1>
       <noscript>
          <span style="color: #f00; font-weight: bold;">
@@ -93,5 +98,6 @@
       <p>
          Status: <span id="status">Authenticating...</span>
       </p>
+      </div>
    </body>
  </html>
