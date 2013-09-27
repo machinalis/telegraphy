@@ -21,7 +21,8 @@ class AuthToken(object):
     def __init__(self):
         self.creation_time = datetime.now()
         self.expiration = timedelta(seconds=5)  # TODO: Configure
-        self.value = uuid.uuid3(uuid.NAMESPACE_DNS, str(self.creation_time))
+        self.uuid = uuid.uuid3(uuid.NAMESPACE_DNS, str(self.creation_time))
+        self.value = str(self.uuid)
 
     def is_valid(self):
         return (self.creation_time + self.expiration) >= datetime.now()
@@ -69,7 +70,10 @@ class Gateway(object):
         pass
 
     def verify_auth_token(self, auth_token):
-        return True
+        for token in self.auth_tokens:
+            if token.value == auth_token:
+                return True
+        raise Exception("INVALID")
 
     @for_client
     def on_connect(self, web_socket, auth_token, session_token):
