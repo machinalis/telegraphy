@@ -7,6 +7,6 @@ while true
     {
         echo "file changed; time to run make html"
         make -C doc html
-        which notify-send && notify-send "Telegraphy Sphinx doc builded"
+        which notify-send && notify-send "Telegraphy Sphinx doc built"
     }
 done
