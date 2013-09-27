@@ -1,15 +1,14 @@
-Teelgraphy
+Telegraphy
 ===========
 
 Project home: http://github.com/...
 
-This projects aims to facilitate the integration of real-time features into a Django project.
+This projects facilitates the integration of real-time features into a Django project.
 
-Several tools and protocols are bundled together to provide a simple interface where to register your models. Then, through the provided
-JavaScript API you can connect callbacks that will be executed every time your model instances are created, updated or deleted.
+You can easily extend you models to generate server-side, asynchronous, events that can be received
+(and handled) in your frontend templates, in real time.
 
-Or what's more, you can easily define custom events (server side) and _emit_ them whenever you want: your JS on the front-end will be notified
-in real time!
+
 
 
 

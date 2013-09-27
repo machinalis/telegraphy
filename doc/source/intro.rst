@@ -1,5 +1,5 @@
 The telegraphy framework
-=====================
+=========================
 
 The telegraphy project comprises three main components:
  * El Gateway incluye: una API (provee lo necesario para definir eventos, etc), un servidor tipo web-sockets (SS, en una primera instancia Tornado+SockJS) y un componente de IPC que conecta la API con el SS (inicialmente 0MQ).
