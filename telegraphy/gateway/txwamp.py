@@ -1,6 +1,6 @@
 
 from telegraphy.gateway import Gateway
-
+from telegraphy.utils import build_url_from_settings
 from twisted.internet import reactor  # , defer
 
 from autobahn.websocket import listenWS
@@ -60,10 +60,9 @@ class TxWAMPGateway(Gateway):
     """Twitsed implementation of Gateway over WAMP protocol"""
 
     def __init__(self, settings):
-        #self.port = settings.get('PORT', 9000)
-        self.url = settings.get('URL', "ws://localhost:9000")
-        self.debug = settings.get('DEBUG', False)
-        self.rpc_url = settings.get('RPC_URL', 'http://localhost:4000')
+        self.url = build_url_from_settings(settings)
+        self.debug = settings.DEBUG
+        self.rpc_url = settings.TELEGRAPHY_RPC_URL
         self.xmlrpc_port = urlparse(self.rpc_url).port
 
     def run(self):
