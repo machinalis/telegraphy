@@ -13,7 +13,8 @@ def build_url_from_settings(settings):
     return ''.join(url_parts)
 
 def check_valid_settings(settings):
-    pass
+    """Validate sane settings"""
+    return True
 
 
 def extract_host_from_request(request):

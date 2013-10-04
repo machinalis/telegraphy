@@ -11,43 +11,32 @@
 
       <script>
          // WAMP session object
-         var sess = null;
-         var token = "{% auth_token %}";
+         var SESS = null;
+         var TOKEN = "{% auth_token %}";
+         var WS_URL = "{% telegraphy_ws_url %}";
 
-         window.onload = function() {
-
-            var wsuri;
-            if (window.location.protocol === "file:") {
-               wsuri = "ws://localhost:9000";
-            } else {
-               wsuri = "ws://" + window.location.hostname + ":9000";
+         $(function () {
+            // On load
+            function onConnectSuccess(session){
+               SESS = session;
+               console.log("Connected with", session);
             }
-
-            // connect to WAMP server
-            ab.connect(wsuri,
-
-               // WAMP session was established
-               function (session) {
-
-                  sess = session;
-
-                  console.log("Connected to " + wsuri);
-                  test();
-               },
-
-               // WAMP session is gone
-               function (code, reason) {
-
-                  sess = null;
-
-                  if (code == ab.CONNECTION_UNSUPPORTED) {
-                     window.location = "http://autobahn.ws/unsupportedbrowser";
-                  } else {
-                     console.log(reason);
-                  }
+            function onConnnectError(){
+               if (code == ab.CONNECTION_UNSUPPORTED) {
+                  window.location = "http://autobahn.ws/unsupportedbrowser";
+               } else {
+                  $('#status').text("Error. Telegraphy server running?");
+                  console.log(reason);
                }
-            );
-         };
+            }
+            ab.connect(WS_URL, onConnectSuccess, onConnnectError);
+
+
+         });
+
+
+
+
 
          function test() {
 
@@ -95,8 +84,8 @@
             You need to turn on JavaScript.
          </span>
       </noscript>
-      <p>
-         Status: <span id="status">Authenticating...</span>
+      <p class="lead">
+         Status: <span class="" id="status">Authenticating...</span>
       </p>
       </div>
    </body>

@@ -118,9 +118,7 @@ class Gateway(object):
     @classmethod
     def from_settings(cls, settings):
         """Gateway process factory"""
-        print settings
-        assert 'ENGINE' in settings
-        engine = settings['ENGINE']
+        engine = settings.TELEGRAPHY_ENGINE
         engine_module, engine_class = engine.rsplit('.', 1)
         module = import_module(engine_module)
         engine_class = getattr(module, engine_class)
