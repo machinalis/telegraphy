@@ -21,7 +21,7 @@
                SESS = session;
                console.log("Connected with", session);
             }
-            function onConnnectError(){
+            function onConnnectError(code, reason){
                if (code == ab.CONNECTION_UNSUPPORTED) {
                   window.location = "http://autobahn.ws/unsupportedbrowser";
                } else {
