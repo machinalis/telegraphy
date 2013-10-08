@@ -126,7 +126,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'django_telegraphy',
+    'telegraphy.contrib.django.app',
     'apps.telegraphy_demo',
 )
 
