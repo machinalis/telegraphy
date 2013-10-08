@@ -4,14 +4,14 @@ from django.core.exceptions import ImproperlyConfigured
 import xmlrpclib
 from socket import error as SocketError
 import errno
-from django_telegraphy import settings
+from telegraphy.contrib.django.app import settings
 from telegraphy.utils import build_url_from_settings, extract_host_from_request
 
 
 register = template.Library()
 
-@register.simple_tag
-def auth_token():
+@register.simple_tag(takes_context=True)
+def auth_token(context):
     # TODO: Generalise
     try:
         url = settings.TELEGRAPHY_RPC_URL
