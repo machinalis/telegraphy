@@ -56,7 +56,7 @@ class Gateway(object):
     auth_tokens = []
 
     @for_webapp
-    def get_auth_token(self):
+    def get_auth_token(self, uid):
         '''Called from Web Application'''
         token = AuthToken()
         self.auth_tokens.append(token)
@@ -111,10 +111,6 @@ class Gateway(object):
     # Number of seconds before exipring lost connection token
     timeout = 3
 
-    # TODO: Make django agnostic auth token retrieval from client
-    # def authenticate(self, **authentication):
-    # 	'''Authentication could be sessionid in django, or user,pass, etc'''
-    # 	pass
     @classmethod
     def from_settings(cls, settings):
         """Gateway process factory"""

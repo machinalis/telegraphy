@@ -16,7 +16,12 @@ def auth_token(context):
     try:
         url = settings.TELEGRAPHY_RPC_URL
         proxy = xmlrpclib.ServerProxy(url)
-        token = proxy.get_auth_token()
+        user = context['request'].user
+        if user.is_authenticated():
+            uid = user.pk
+        else:
+            uid = None
+        token = proxy.get_auth_token(uid)
         return token
     except SocketError as e:
         if e.errno == errno.ECONNREFUSED:
