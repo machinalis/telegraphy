@@ -5,6 +5,13 @@ Project home: http://github.com/...
 
 This projects facilitates the integration of real-time features into a Django project.
 
+Django is not prepeared for handling real time web features. There are a lot of
+technologies like asynchronous servers, message queues, advanced key-value stores
+that are not trivial to integrate with Django. Telegraphy currently abstract messages
+as classes. In order to send some event to the browser, you must define an event class.
+
+
+
 You can easily extend you models to generate server-side, asynchronous, events that can be received
 (and handled) in your frontend templates, in real time.
 
@@ -14,8 +21,8 @@ The Django Telegraphy App
 
 Includes the following features:
 
-    - Simple management command to run an asynchronous-events management server.
-    - Automatic model based *create*, *update*, *delete* events.
+    - Simple management management command to run an asynchronous-events server.
+    - Generic model signal based *create*, *update*, *delete* events.
     - Custom events definitions.
     - Template tags and a JavaScript API for easy events management on the frontend.
 
