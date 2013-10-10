@@ -1,1 +1,1 @@
-from base import Gateway
+from base import Gateway, BaseEvent
