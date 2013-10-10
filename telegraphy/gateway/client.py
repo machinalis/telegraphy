@@ -1,7 +1,4 @@
-PROTOCOL_STATES = [
-    'WAIT_CONNECT',
 
-]
 
 class Client(object):
     def __init__(self, transport=None, gateway=None):
