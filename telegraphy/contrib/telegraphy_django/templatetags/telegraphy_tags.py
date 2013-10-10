@@ -1,10 +1,10 @@
 from django import template
 
 from django.core.exceptions import ImproperlyConfigured
-import xmlrpclib
 from socket import error as SocketError
 import errno
-from telegraphy.contrib.django.app import settings
+from telegraphy.contrib.telegraphy_django import settings
+from telegraphy.base import GatewayProxy
 from telegraphy.utils import build_url_from_settings, extract_host_from_request
 
 
@@ -14,8 +14,8 @@ register = template.Library()
 def auth_token(context):
     # TODO: Generalise
     try:
-        url = settings.TELEGRAPHY_RPC_URL
-        proxy = xmlrpclib.ServerProxy(url)
+        proxy = GatewayProxy.from_settings(settings)
+
         user = context['request'].user
         if user.is_authenticated():
             uid = user.pk

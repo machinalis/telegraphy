@@ -10,8 +10,13 @@ TELEGRAPHY_WS_PORT = getattr(django_settings, 'TELEGRAPHY_WS_PORT', 9000)
 TELEGRAPHY_WS_HOST = getattr(django_settings, 'TELEGRAPHY_WS_HOST', None)
 # Base URL for WS
 TELEGRAPHY_WS_URI = getattr(django_settings, 'TELEGRAPHY_WS_URI', None)
-# URL for events from source to gateway
-TELEGRAPHY_RPC_URL = getattr(django_settings, 'TELEGRAPHY_RPC_URL', 'http://localhost:4000')
+
+# RPC class
+TELEGRAPHY_RPC_ENGINE = getattr(django_settings, 'TELEGRAPHY_RPC_URL',
+                                'telegraphy.base.XMLRPCGatewayProxy')
+# URL for events from webapp to gateway
+TELEGRAPHY_RPC_PARAMS = getattr(django_settings, 'TELEGRAPHY_RPC_PARAMS',
+                                  {'url': 'http://localhost:4000'})
 # Javascript URL
 AUTOBAHN_URL = getattr(django_settings, 'AUTOBAHN_URL',
                                     'http://autobahn.s3.amazonaws.com/js/autobahn.min.js')

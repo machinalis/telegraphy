@@ -16,7 +16,7 @@ class Command(BaseCommand):
 
 
     def inner_run(self, *args, **options):
-        from django_telegraphy import settings
+        from telegraphy.contrib.telegraphy_django import settings
         if not check_valid_settings(settings):
             raise ImproperlyConfigured("Missing telegraphy configuration in "
                 "settings")
