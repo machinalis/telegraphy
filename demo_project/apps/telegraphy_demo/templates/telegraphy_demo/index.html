@@ -21,9 +21,24 @@
 
             function onSystemEvent(topic, event){
                console.log("Event!", topic, event);
-               var name = topic.slice(topic.indexOf('#')+1)
-               $('#event-logs').append('<li>'+name+'</li>');
+               var name = topic.slice(topic.indexOf('#')+1);
+               var $event_anchor = $('<a/>').text(name);
+               var event_data = window.JSON.stringify(event);
+               $event_anchor.data('event_data', event_data);
+               $event_anchor.attr('title', 'Data:'+event_data);
+               $event_anchor.bind('click', showEventData);
+               $('#event-logs').append($('<li/>').append($event_anchor));
 
+            }
+
+            function showEventData () {
+               var event_data = $(this).data('event_data');
+               var $dlg = $('<div/>').dialog({
+                  autoOpen: false,
+                  close: function () { $(this).dialog('destroy')},
+               });
+               $dlg.html('<pre>'+event_data+'</pre>');
+               $dlg.dialog('open');
             }
 
 
@@ -79,22 +94,6 @@
             });
          });
 
-         function test() {
-
-
-            // Call a remote procedure, and a 2nd one with the result of the first
-            //
-            sess.call("http://example.com/simple/calc#sub", 15, 5).then(
-               function (res) {
-                  // call a remote procedure
-                  sess.call("http://example.com/simple/calc#mul", res, res).then(
-                     function (res) {
-                        console.log("RPC result: " + res);
-                     }
-                  );
-               }
-            );
-         };
       </script>
       {% endblock extraheader %}
 
@@ -107,19 +106,28 @@
                You need to turn on JavaScript.
             </span>
          </noscript>
+         <div>
+
+         </div>
          <p class="lead">
             Status: <span class="" id="status">Authenticating...</span>
          </p>
-         <div>
-            <button id="send_custom_events" type="button" class="btn btn-default btn-lg">
+         <div class="well">
+            <button id="send_custom_events" type="button" class="btn btn-default">
                <span class="glyphicon glyphicon-bullhorn"></span>
                Send Custom Events
             </button>
-            <p>Event Log</p>
-            <ul id="event-logs">
-
-            </ul>
+            <button id="subscribe_custom_event" type="button" class="btn btn-default">
+               <span class="glyphicon glyphicon-pushpin"></span>
+               Subscribe to custom event
+            </button>
          </div>
+         <!-- Logging -->
+         <h3>Event Log</h3>
+         <ul id="event-logs">
+
+         </ul>
+         <!-- Form to copy -->
          <div style="display: none;" id="event_data_form">
             <form>
             Event name: <input placeholder="Event name">
