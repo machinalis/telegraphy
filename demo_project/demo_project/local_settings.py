@@ -1,6 +1,3 @@
 TELEGRAPHY_ENGINE = 'telegraphy.gateway.txwamp.TxWAMPGateway'
-TELEGRAPHY_WS_HOST = None
-TELEGRAPHY_WS_PORT = 9000
-TELEGRAPHY_WS_URI = None
-TELEGRAPHY_RPC_URL = 'http://localhost:4000/'
+
 
