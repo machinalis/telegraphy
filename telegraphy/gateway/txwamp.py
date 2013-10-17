@@ -120,6 +120,9 @@ class TxWAMPGateway(Gateway):
         return urlparse(self.rpc_url).port
 
     def run(self, start_reactor=True):
+        # Look for event classes in the source tree
+        self.autodiscover()
+        # Create factory
         self.factory = GatewayWampServerFactory(self.url,
                                            debugWamp=self.debug,
                                            gateway=self
