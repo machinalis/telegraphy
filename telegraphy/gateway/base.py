@@ -170,15 +170,6 @@ class Gateway(object):
             pass
         self.expire_auth_token(auth_token)
 
-    @for_client
-    def subscribe_to_event(self, event_name, token, permanent=False):
-        '''Subscribe a client to the named event.'''
-        if event_name in self.registry:
-            event_class = self.registry[event_name]
-            event_class.can_authenticate()
-            subs = self.subscriptions.setdefault(event_name, [])
-            subs.append(token)
-
     @classmethod
     @for_webapp
     def autodiscover(cls):
