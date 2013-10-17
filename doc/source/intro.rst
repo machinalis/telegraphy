@@ -1,17 +1,40 @@
-The Meerkat framework
-=====================
+=======================
+The Telegraphy Project
+=======================
 
-The Meerkat project comprises three main components:
- * El Gateway incluye: una API (provee lo necesario para definir eventos, etc), un servidor tipo web-sockets (SS, en una primera instancia Tornado+SockJS) y un componente de IPC que conecta la API con el SS (inicialmente 0MQ).
- * A JS API: implements a custom, simple protocol, to communicate with the gateway. It can subscribe to specific type of events, receive such events as they happen server-side, query for metadata of available event's types, etc.
- * A Django app: provides a class-based api that provides a means to extend db Models with features to generate events. Some default events related to db operations (create, update, delete) are automatically inherited (configurable), relying on Django-signals. Other custom events can be created.
+This project is about making the *real-time web* easier for the Django developers (and to Python web-developers in general).
+
+In a very general way, the issue we want to solve is **How can I easily receive and handle server-side generated events, on the frontend?**.
+
+There's a lot going on about this. There are many standards, protocols, tools, services and sophisticated frameworks related to this issue.
+But most of them have at least one of the following problems:
+
+    - They don't solve the whole problem
+    - They are not easy to use.
+    - They are not well documented.
+
+Therefore, our main objectives are to provide:
+    - well documented and tested tools,
+    - that are simple to install and use,
+    - which rely on open standards and protocols,
+    - to emmit and handle asynchronous, server-side events in real-time.
+
+
+Components
+**********
+
+The Telegraphy project's architecture has three main components:
+ * A web-application that registers and emits events. The current project includes a very powerful `Django app`_.
+ * A Gateway_ is an scalable, high-performance, asynchronous, networking engine.
+ * A `client api`_ which talks `WAMP <http://wamp.ws//>`_ (through a WebSocket) with a *Gateway*.
+   This is normally a JavaScript loaded from a web-page. An API is provided, based on `AutobahnJS <http://autobahn.ws/js>`_.
+
+.. image:: _static/architecture-protocol-stack.png
+
+.. _gateway:
 
 Gateway
 ********
-
-_meerkat_'s API allows to define events by inheriting from the base meerkat.Event class. Other specialized type of events are provided: guaranteed delivery, with TTL, etc.
-
-When running the RT server, all the existing _events_ (automatic discovery mechanism? filename based?) are automatically "exposed" through our custom, websockets-based protocol, thus easily accesible from the JS API.
 
 The gateway has the responsability to assure continuous service. Changes in configuration or events definitions must be transparent for the client (if possible). Otehrwise, specific resources muts be design in order to be able to implement client-side mechanisms to remain "connected" (reconnect, etc).
 
@@ -19,8 +42,35 @@ Client representatives identification: on connection, the Gateway provides a uni
 
 Persitent subscriptions: a client may decide that a given subscription to an event is 'permanent'. The subscription mechanism provided by the protocol must include some parameter to indicate this situation.
 
-Auth:
 
+    - Real Time Events
+        - Authentication
+        - Subscription handling
+            - Public vs Authnticated Events
+            - Subscription management (client or event based)
+        - Persistant Subscriptions
+        - Event management
+            - Class based event definition
+            - Event query language
+                - Performance
+                - Simplified client side subscription handling
+                - Easy channel emulation
+
+.. _Django app:
+
+Django Telegraphy
+*****************
+    - Management command for server (run with minimal settings)
+    - Automatic model based CUD events (Create, Update, Delete)
+    - Custom Event definitions
+    - Template tags for easy configuration
+
+This module allows to define events by inheriting from a base telegraphy.Event class.
+Different specialized type of events are provided: guaranteed delivery, with TTL, etc.
+
+
+
+.. _client api:
 
 JavaScript API
 ****************
@@ -51,7 +101,7 @@ security issues. Since Gateway process may not run in the same context (port, ip
 rely on it for authentication.
 
 In order to authenticate clients we must pre share a secret *ws auth token*.
-This token is created by the gateway whenever a page that uses meerkat template tag is rendered.
+This token is created by the gateway whenever a page that uses telegraphy template tag is rendered.
 These tokens are short lived, they expire once the websocket connection has been established.
 
 If the client reconnects it must send a CONNECT command

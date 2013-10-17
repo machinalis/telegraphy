@@ -1,7 +1,9 @@
 # Django settings for demo_project project.
+import os
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+BASE_DIR = os.path.abspath(os.path.curdir)
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -11,8 +13,8 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '',                      # Or path to database file if using sqlite3.
+        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'demo_db.sqlite3',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
         'USER': '',
         'PASSWORD': '',
@@ -124,9 +126,16 @@ INSTALLED_APPS = (
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-
-    'django_meerkat',
+    'telegraphy.contrib.telegraphy_django',
+    'apps.telegraphy_demo',
 )
+
+try:
+    import django_extensions
+except ImportError:
+    pass
+else:
+    INSTALLED_APPS += ('django_extensions', )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
@@ -159,7 +168,20 @@ LOGGING = {
     }
 }
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+     "django.core.context_processors.request", # <- HERE
+     "django.contrib.auth.context_processors.auth",
+     "django.core.context_processors.debug",
+     "django.core.context_processors.i18n",
+     "django.core.context_processors.media",
+     "django.core.context_processors.static",
+     "django.core.context_processors.tz",
+     "django.contrib.messages.context_processors.messages",
+)
+
+
 try:
     from local_settings import *
 except ImportError, e:
     pass
+

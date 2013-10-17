@@ -1,0 +1,130 @@
+{% extends "telegraphy_demo/base.html" %}
+{% load telegraphy_tags %}
+
+      {% block extraheader %}
+      <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+      <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+      <script>
+         // Globals, soon to be namespaced under telegraphy
+         var SESS = null;
+         var TOKEN = "{% auth_token %}";
+         var WS_URL = "{% telegraphy_ws_url %}";
+         var WS_NAMESPACE = "{% telegraphy_event_prefix %}";
+         /**
+          * WAMP uses full urls for events
+          */
+         $(function () {
+            /** Libraryfunc */
+            function getEventName(name) {
+               return WS_NAMESPACE + name;
+            }
+
+            function onSystemEvent(topic, event){
+               console.log("Event!", topic, event);
+               var name = topic.slice(topic.indexOf('#')+1)
+               $('#event-logs').append('<li>'+name+'</li>');
+
+            }
+
+
+            // On load
+            function onConnectSuccess(session){
+               SESS = session;
+               console.log("Connected with", session);
+               var eventName = getEventName('system');
+               console.info("Subscribe to...", eventName);
+               SESS.subscribe(eventName, onSystemEvent);
+               SESS.subscribe('http://telegraphy.machinalis.com/events#')
+            }
+            function onConnnectError(code, reason){
+               if (code == ab.CONNECTION_UNSUPPORTED) {
+                  window.location = "http://autobahn.ws/unsupportedbrowser";
+               } else {
+                  $('#status').text("Error. Telegraphy server running?");
+                  console.log(reason);
+               }
+            }
+            var options = {
+               maxRetries: 100,
+               retryDelay: 1000
+            }
+            ab.connect(WS_URL, onConnectSuccess, onConnnectError, options);
+
+            $('#send_custom_events').click(function (){
+               var $dlg = $('<div/>').dialog({
+                  buttons: [
+                     {
+                        text: "Send!",
+                        click: function (){
+                           // Make RPC call to send event
+                           var call = SESS.call('http://telegraphy.machinalis.com/rpc#publish',
+                                                'evento', {'a':1, 'b': 2});
+                           call.then(function (){
+                              console.info("RPC Event: OK", arguments)
+                           },
+                           function () {
+                              console.error("RPC Event: ERROR", arguments);
+                           })
+
+                        }
+                     }
+                  ],
+                  autoOpen: false,
+                  close: function (){
+                     $(this).dialog('destroy');
+                  }
+               });
+               $dlg.html($('#event_data_form form').clone());
+               $dlg.dialog('open');
+            });
+         });
+
+         function test() {
+
+
+            // Call a remote procedure, and a 2nd one with the result of the first
+            //
+            sess.call("http://example.com/simple/calc#sub", 15, 5).then(
+               function (res) {
+                  // call a remote procedure
+                  sess.call("http://example.com/simple/calc#mul", res, res).then(
+                     function (res) {
+                        console.log("RPC result: " + res);
+                     }
+                  );
+               }
+            );
+         };
+      </script>
+      {% endblock extraheader %}
+
+      {% block content %}
+
+
+         <h1>Telegraphy Authentication test</h1>
+         <noscript>
+            <span style="color: #f00; font-weight: bold;">
+               You need to turn on JavaScript.
+            </span>
+         </noscript>
+         <p class="lead">
+            Status: <span class="" id="status">Authenticating...</span>
+         </p>
+         <div>
+            <button id="send_custom_events" type="button" class="btn btn-default btn-lg">
+               <span class="glyphicon glyphicon-bullhorn"></span>
+               Send Custom Events
+            </button>
+            <p>Event Log</p>
+            <ul id="event-logs">
+
+            </ul>
+         </div>
+         <div style="display: none;" id="event_data_form">
+            <form>
+            Event name: <input placeholder="Event name">
+            Data: <textarea name="" id="" cols="30" rows="10" placeholder="Data">
+            </textarea>
+            </form>
+         </div>
+         {% endblock content %}

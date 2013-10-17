@@ -1,0 +1,1 @@
+include telegraphy/contrib/django/app/static/*

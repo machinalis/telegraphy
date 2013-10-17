@@ -1,5 +1,12 @@
 *.pyc
-.DS_Store
 .idea
+.gitignore
+*~
+local_settings.py
+doc/build/
 .swp
 .swo
+*.sublime-*
+build/*
+dist/*
+*.egg*
