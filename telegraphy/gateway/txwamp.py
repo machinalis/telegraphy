@@ -90,10 +90,28 @@ class TxWAMPGateway(Gateway):
     """Twitsed implementation of Gateway over WAMP protocol"""
 
     def __init__(self, settings):
-        self.url = build_url_from_settings(settings)
-        self.debug = settings.DEBUG
-        self.rpc_url = settings.TELEGRAPHY_RPC_PARAMS['url']
-        self.xmlrpc_port = urlparse(self.rpc_url).port
+        # Save settings for later use through properties
+        self.settings = settings
+
+    _url = None
+    @property
+    def url(self):
+        if not self._url:
+            self._url = build_url_from_settings(self.settings)
+        return self._url
+
+    @property
+    def rpc_url(self):
+        return self.settings.TELEGRAPHY_RPC_PARAMS['url']
+
+    @property
+    def debug(self):
+        # TODO: Check if WAMP debug must be dettached from this setting
+        return self.settings.DEBUG
+
+    @property
+    def xmlrpc_port(self):
+        return urlparse(self.rpc_url).port
 
     def run(self):
         factory = GatewayWampServerFactory(self.url,
