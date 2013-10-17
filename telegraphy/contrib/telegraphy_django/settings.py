@@ -12,8 +12,8 @@ TELEGRAPHY_WS_HOST = getattr(django_settings, 'TELEGRAPHY_WS_HOST', None)
 TELEGRAPHY_WS_URI = getattr(django_settings, 'TELEGRAPHY_WS_URI', None)
 
 # RPC class
-TELEGRAPHY_RPC_ENGINE = getattr(django_settings, 'TELEGRAPHY_RPC_URL',
-                                'telegraphy.base.XMLRPCGatewayProxy')
+TELEGRAPHY_RPC_ENGINE = getattr(django_settings, 'TELEGRAPHY_RPC_ENGINE',
+                                'telegraphy.gateway.base.XMLRPCGatewayProxy')
 # URL for events from webapp to gateway
 TELEGRAPHY_RPC_PARAMS = getattr(django_settings, 'TELEGRAPHY_RPC_PARAMS',
                                   {'url': 'http://localhost:4000'})
