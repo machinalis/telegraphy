@@ -80,9 +80,15 @@ class WebAppXMLRPCInterface(xmlrpc.XMLRPC):
         self.gateway = kwargs.pop('gateway')
         xmlrpc.XMLRPC.__init__(self, *args, **kwargs)
 
+    # All exposed methods must start with xmlrpc
+
     def xmlrpc_get_auth_token(self):
         """Generate auth token"""
         return self.gateway.get_auth_token()
+
+    def xmlrpc_send_event(self, event, data):
+        print event, data
+        return "OK"
 
 
 class TxWAMPGateway(Gateway):
@@ -113,7 +119,7 @@ class TxWAMPGateway(Gateway):
     def xmlrpc_port(self):
         return urlparse(self.rpc_url).port
 
-    def run(self):
+    def run(self, start_reactor=True):
         factory = GatewayWampServerFactory(self.url,
                                            debugWamp=self.debug,
                                            gateway=self
@@ -126,4 +132,5 @@ class TxWAMPGateway(Gateway):
 
         reactor.listenTCP(self.xmlrpc_port, server.Site(r))
 
-        reactor.run()
+        if start_reactor:
+            reactor.run()
