@@ -1,3 +1,6 @@
+"""Collection of utility functions not tight to any other module"""
+from importlib import import_module
+
 def build_url_from_settings(settings):
     """Constructs web socket urls from settings"""
     # TODO: Configure in settings
@@ -19,6 +22,7 @@ def check_valid_settings(settings):
 
 
 def extract_host_from_request(request):
+    """Extracts host from possible Django request"""
     host = None
     if not request.is_secure():
         host = request.META['HTTP_HOST']
@@ -34,3 +38,11 @@ def attr_or_item(obj, name):
     if hasattr(obj, name):
         return getattr(obj, name)
     return obj[name]
+
+
+def import_class(path):
+    """Imports a class based in a string path"""
+    requested_module, requested_class = path.rsplit('.', 1)
+    module = import_module(requested_module)
+    requested_class = getattr(module, requested_class)
+    return requested_class
