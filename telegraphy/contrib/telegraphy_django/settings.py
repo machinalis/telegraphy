@@ -17,6 +17,12 @@ TELEGRAPHY_RPC_ENGINE = getattr(django_settings, 'TELEGRAPHY_RPC_ENGINE',
 # URL for events from webapp to gateway
 TELEGRAPHY_RPC_PARAMS = getattr(django_settings, 'TELEGRAPHY_RPC_PARAMS',
                                   {'url': 'http://localhost:4000'})
+
+# Event
+TELEGRAPHY_SEND_UNREGISTERED = getattr(django_settings,
+                                        'TELEGRAPHY_SEND_UNREGISTERED', True)
+
+
 # Javascript URL
 
 AUTOBAHN_S3 = 'http://autobahn.s3.amazonaws.com/js/autobahn.min.js'

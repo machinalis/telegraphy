@@ -175,12 +175,14 @@ class Gateway(object):
             pass
         self.expire_auth_token(auth_token)
 
-    @classmethod
     @for_webapp
-    def autodiscover(cls):
+    def autodiscover(self, initial_path=None):
         '''Finds event classes accross project and auto register them'''
-        pass
+        if not initial_path:
+            pass
 
+
+    # TODO Check if still needed
     _subscriptions = {}
 
     @property
