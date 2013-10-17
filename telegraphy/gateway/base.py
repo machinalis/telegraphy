@@ -62,7 +62,7 @@ class XMLRPCGatewayProxy(GatewayProxy):
         self.proxy = xmlrpclib.ServerProxy(url)
 
     def send_event(self, name, data):
-        self.proxy.send_event(name, data)
+        return self.proxy.send_event(name, data)
 
 
 class BaseEvent(object):
@@ -92,7 +92,7 @@ class BaseEvent(object):
 
     def send(self):
         '''Send the event to the gateway'''
-        self.get_gateway_proxy().send_event(self.name, self.data)
+        return self.get_gateway_proxy().send_event(self.name, self.data)
 
     def serialize(self, data):
         '''Data is a python object
@@ -209,6 +209,8 @@ class Gateway(object):
         event_class = self.registry[event_name]
         event_intance = event_class(serialized_data=event_data)
         self.publish_to_subscribers(event_intance)
+        # TODO: Return something sane (defer?)
+        return True
 
     def publish_to_subscribers(self, event_intance):
         for conn in self.connections:

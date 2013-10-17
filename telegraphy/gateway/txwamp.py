@@ -87,8 +87,8 @@ class WebAppXMLRPCInterface(xmlrpc.XMLRPC):
         return self.gateway.get_auth_token()
 
     def xmlrpc_send_event(self, event, data):
-        print event, data
-        return "OK"
+        return self.gateway.on_event(event, data)
+
 
 
 class TxWAMPGateway(Gateway):
@@ -120,13 +120,13 @@ class TxWAMPGateway(Gateway):
         return urlparse(self.rpc_url).port
 
     def run(self, start_reactor=True):
-        factory = GatewayWampServerFactory(self.url,
+        self.factory = GatewayWampServerFactory(self.url,
                                            debugWamp=self.debug,
                                            gateway=self
                                            )
-        factory.protocol = TelegraphyConnection
-        factory.setProtocolOptions(allowHixie76=True)
-        listenWS(factory)
+        self.factory.protocol = TelegraphyConnection
+        self.factory.setProtocolOptions(allowHixie76=True)
+        listenWS(self.factory)
 
         r = WebAppXMLRPCInterface(gateway=self)
 
