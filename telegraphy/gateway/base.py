@@ -222,4 +222,9 @@ class Gateway(object):
 
 
     def run(self):
+        """Executes gateway server"""
         raise NotImplementedError()
+
+    def getPubSubUris(self):
+        """Returns registered pubsub events"""
+        return ['http://telegraphy.machinalis.com/events#']

@@ -18,6 +18,12 @@ TELEGRAPHY_RPC_ENGINE = getattr(django_settings, 'TELEGRAPHY_RPC_URL',
 TELEGRAPHY_RPC_PARAMS = getattr(django_settings, 'TELEGRAPHY_RPC_PARAMS',
                                   {'url': 'http://localhost:4000'})
 # Javascript URL
-AUTOBAHN_URL = getattr(django_settings, 'AUTOBAHN_URL',
-                                    'http://autobahn.s3.amazonaws.com/js/autobahn.min.js')
+
+AUTOBAHN_S3 = 'http://autobahn.s3.amazonaws.com/js/autobahn.min.js'
+AUTOBAHN_URL = getattr(django_settings, 'AUTOBAHN_URL', django_settings.STATIC_URL +
+                                                        'telegraphy/js/autobahn.min.js')
+
 TELEGRAPHY_IS_SECURE = getattr(django_settings, 'TELEGRAPHY_IS_SECURE', False)
+
+TELEGRAPHY_EVENT_PREFIX = getattr(django_settings, 'TELEGRAPHY_EVENT_PREFIX',
+                                  'http://telegraphy.machinalis.com/events#')

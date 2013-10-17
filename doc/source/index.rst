@@ -6,9 +6,17 @@
 Welcome to Telegraphy's documentation!
 ===================================
 
-Contents:
+Telegraphy provides a real time events for WSGI Python applications with additional
+features such as event filtering, subscription persistance and authorization/authentication.
 
-:doc:`Introduction (this page)<index>`
+It's initially intended for Django but you can extend it to any WSGI framework.
+
+WebSocket pub/sub and RPC is based on AutobahnPython_ implementation of `WAMP protocol`_
+
+.. _AutobahnPython: http://autobahn.ws/
+
+.. _WAMP Protocol: http://wamp.ws/
+
 
 :doc:`intro`
 

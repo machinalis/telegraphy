@@ -21,6 +21,11 @@ class TelegraphyConnection(WampServerProtocol):
     def onSessionOpen(self):
         # .. and register them for RPC. that's it.
         self.registerForRpc(self, "http://localhost:9000/telegraphy#")
+        # Pubsub
+        for pubsub_uri in self.gateway.getPubSubUris():
+            prefix_match = pubsub_uri.endswith('#')
+            self.registerForPubSub(pubsub_uri, prefix_match)
+        self.registerForRpc(self, "http://telegraphy.machinalis.com/rpc#")
 
     @exportRpc("authenticate")
     def authenticate(self, auth_token, session_id):
@@ -29,18 +34,43 @@ class TelegraphyConnection(WampServerProtocol):
             return "OK"
         # TODO: Return error
 
+    def connectionLost(self, reason):
+        WampServerProtocol.connectionLost(self, reason)
+        self.factory.removeConnection(self)
+
+    def clientSubscriptions(self, uri, args, extra=None):
+        pass
+
+    @exportRpc('publish')
+    def clientPublish(self, uri, args, extra=None):
+        """Publish event from client"""
+        self.factory.dispatch('http://telegraphy.machinalis.com/events#'+uri, args)
 
 class GatewayWampServerFactory(WampServerFactory):
 
     def __init__(self, *args, **kwargs):
         self.gateway = kwargs.pop('gateway')
         WampServerFactory.__init__(self, *args, **kwargs)
+        self.connected_clients = []
 
     def buildProtocol(self, addr):
         protocol = WampServerFactory.buildProtocol(self, addr)
         protocol.gateway = self.gateway
+        self.connected_clients.append(protocol)
         return protocol
 
+    def onClientSubscribed(self, proto, topicUri):
+        print proto, topicUri
+
+        #import ipdb; ipdb.set_trace()
+
+        def dispatch_foo(fact, topicUri):
+            print "Sending ", topicUri
+            fact.dispatch(topicUri, {'a':1, 'b':3})
+        reactor.callLater(1, dispatch_foo, self, topicUri)
+
+    def removeConnection(self, proto):
+        self.connected_clients.remove(proto)
 
 class WebAppXMLRPCInterface(xmlrpc.XMLRPC):
 
@@ -62,7 +92,7 @@ class TxWAMPGateway(Gateway):
     def __init__(self, settings):
         self.url = build_url_from_settings(settings)
         self.debug = settings.DEBUG
-        self.rpc_url = settings.TELEGRAPHY_RPC_URL
+        self.rpc_url = settings.TELEGRAPHY_RPC_PARAMS['url']
         self.xmlrpc_port = urlparse(self.rpc_url).port
 
     def run(self):
