@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
-from importlib import import_module
 from .decorators import for_client, for_webapp
+from telegraphy.utils import attr_or_item, import_class
 import xmlrpclib
 import uuid
 
@@ -46,11 +46,9 @@ class GatewayProxy(object):
 
     @classmethod
     def from_settings(cls, settings):
-        engine = settings.TELEGRAPHY_RPC_ENGINE
-        rpc_params = settings.TELEGRAPHY_RPC_PARAMS
-        engine_module, engine_class = engine.rsplit('.', 1)
-        module = import_module(engine_module)
-        engine_class = getattr(module, engine_class)
+        engine = attr_or_item(settings, 'TELEGRAPHY_RPC_ENGINE')
+        rpc_params = attr_or_item(settings, 'TELEGRAPHY_RPC_PARAMS')
+        engine_class = import_class(engine)
         instance = engine_class(**rpc_params)
         return instance
 
@@ -117,9 +115,8 @@ class Gateway(object):
     # Known events name - event class
     registry = {}
 
-    @classmethod
     @for_webapp
-    def register(cls, event_class):
+    def register(self, event_class):
         '''Register a new event class in the Gateway'''
 
         if event_class is BaseEvent:
@@ -132,10 +129,18 @@ class Gateway(object):
         if not event_class.name:
             raise ConfigurationError("Event %s has no name." % event_class)
 
-        if event_class.name in cls.registry:
+        if event_class.name in self.registry:
             raise ConfigurationError("%s has already been registered" % event_class.name)
 
-        cls.registry[event_class.name] = event_class
+        # Copy on event only those parametters that are relevant
+        event_communication_settings = {
+            'TELEGRAPHY_RPC_ENGINE': self.settings.TELEGRAPHY_RPC_ENGINE,
+            'TELEGRAPHY_RPC_PARAMS': self.settings.TELEGRAPHY_RPC_PARAMS,
+        }
+
+        event_class._settings = event_communication_settings
+
+        self.registry[event_class.name] = event_class
 
     auth_tokens = []
 
@@ -189,10 +194,8 @@ class Gateway(object):
     @classmethod
     def from_settings(cls, settings):
         """Gateway process factory"""
-        engine = settings.TELEGRAPHY_ENGINE
-        engine_module, engine_class = engine.rsplit('.', 1)
-        module = import_module(engine_module)
-        engine_class = getattr(module, engine_class)
+        engine_path = attr_or_item(settings, 'TELEGRAPHY_ENGINE')
+        engine_class = import_class(engine_path)
         instance = engine_class(settings)
         return instance
 
@@ -219,3 +222,4 @@ class Gateway(object):
     def getPubSubUris(self):
         """Returns registered pubsub events"""
         return ['http://telegraphy.machinalis.com/events#']
+
