@@ -9,6 +9,7 @@ from autobahn.wamp import exportRpc, \
     WampServerProtocol
 from twisted.web import xmlrpc, server
 from urlparse import urlparse
+from telegraphy.utils import show_traceback
 
 
 class TelegraphyConnection(WampServerProtocol):
@@ -18,21 +19,13 @@ class TelegraphyConnection(WampServerProtocol):
     responds to RPC calls.
     """
 
+    @show_traceback
     def onSessionOpen(self):
         # .. and register them for RPC. that's it.
-        self.registerForRpc(self, "http://localhost:9000/telegraphy#")
-        # Pubsub
-        for pubsub_uri in self.gateway.getPubSubUris():
-            prefix_match = pubsub_uri.endswith('#')
-            self.registerForPubSub(pubsub_uri, prefix_match)
-        self.registerForRpc(self, "http://telegraphy.machinalis.com/rpc#")
+        print "On Session Open"
 
-    @exportRpc("authenticate")
-    def authenticate(self, auth_token, session_id):
-        print "Authentication request", auth_token, session_id
-        if self.gateway.verify_auth_token(auth_token):
-            return "OK"
-        # TODO: Return error
+        self.registerForRpc(self, self.gateway.rpc_uri)
+        self.registerForPubSub(self.gateway.event_prefix, prefixMatch=True)
 
     def connectionLost(self, reason):
         WampServerProtocol.connectionLost(self, reason)
@@ -41,10 +34,19 @@ class TelegraphyConnection(WampServerProtocol):
     def clientSubscriptions(self, uri, args, extra=None):
         pass
 
+    @exportRpc("authenticate")
+    def authenticate(self, auth_token, session_id):
+        print "Authentication request", auth_token, session_id
+        if self.gateway.verify_auth_token(auth_token):
+            return "OK"
+        # TODO: Return error
+
     @exportRpc('publish')
     def clientPublish(self, uri, args, extra=None):
-        """Publish event from client"""
-        self.factory.dispatch('http://telegraphy.machinalis.com/events#'+uri, args)
+        """RPC method. Publish event from client"""
+        print uri, args, extra
+        self.factory.dispatch(self.gateway.event_prefix + uri, args)
+
 
 class GatewayWampServerFactory(WampServerFactory):
 
@@ -60,17 +62,18 @@ class GatewayWampServerFactory(WampServerFactory):
         return protocol
 
     def onClientSubscribed(self, proto, topicUri):
-        print proto, topicUri
+        print "Client", proto, "subscribed to", topicUri
 
         #import ipdb; ipdb.set_trace()
 
         def dispatch_foo(fact, topicUri):
             print "Sending ", topicUri
-            fact.dispatch(topicUri, {'a':1, 'b':3})
+            fact.dispatch(topicUri, {'a': 1, 'b': 3})
         reactor.callLater(1, dispatch_foo, self, topicUri)
 
     def removeConnection(self, proto):
         self.connected_clients.remove(proto)
+
 
 class WebAppXMLRPCInterface(xmlrpc.XMLRPC):
 
@@ -87,8 +90,8 @@ class WebAppXMLRPCInterface(xmlrpc.XMLRPC):
         return self.gateway.get_auth_token()
 
     def xmlrpc_send_event(self, event, data):
+        """Method called from the web app side to publish an event to clients"""
         return self.gateway.on_event(event, data)
-
 
 
 class TxWAMPGateway(Gateway):
@@ -100,6 +103,7 @@ class TxWAMPGateway(Gateway):
         self.settings = settings
 
     _url = None
+
     @property
     def url(self):
         if not self._url:
@@ -124,9 +128,9 @@ class TxWAMPGateway(Gateway):
         self.autodiscover()
         # Create factory
         self.factory = GatewayWampServerFactory(self.url,
-                                           debugWamp=self.debug,
-                                           gateway=self
-                                           )
+                                                debugWamp=self.debug,
+                                                gateway=self
+                                                )
         self.factory.protocol = TelegraphyConnection
         self.factory.setProtocolOptions(allowHixie76=True)
         listenWS(self.factory)
