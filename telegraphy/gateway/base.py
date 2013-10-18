@@ -13,6 +13,7 @@ except ImportError:
 class NotRegistered(Exception):
     pass
 
+
 class ConfigurationError(Exception):
     pass
 
@@ -56,6 +57,7 @@ class GatewayProxy(object):
 class XMLRPCGatewayProxy(GatewayProxy):
 
     """XMLRPC gateway implementation"""
+
     def __init__(self, url):
         """Constructor shuld not be called directly but useing base class
         ``from_settings`` method to ensure consitency"""
@@ -87,7 +89,8 @@ class BaseEvent(object):
     def get_gateway_proxy(cls):
         # TODO: Configure
         if cls._settings is None:
-            raise NotRegistered("Event has not been yet registered on any gateway.")
+            raise NotRegistered(
+                "Event has not been yet registered on any gateway.")
         return XMLRPCGatewayProxy.from_settings(cls._settings)
 
     def send(self):
@@ -108,6 +111,16 @@ class BaseEvent(object):
         """Returns True y event match with filters, Fasle otherwise"""
         # TODO: Complete this code
         return
+
+    _generic_event_registry = {}
+
+    @classmethod
+    def generic_event_factory(cls, event_name):
+        """Creates a generic event based on its name. If a event class is not registered
+        in the gateway, and TELEGRAPHY_SEND_UNREGISTERED is turned on, this method is
+        called to build the class. Not it hass a class level cache."""
+        if not event_name in cls._generic_event_registry:
+            cls._generic_event_registry = type()
 
 
 class Gateway(object):
@@ -130,7 +143,8 @@ class Gateway(object):
             raise ConfigurationError("Event %s has no name." % event_class)
 
         if event_class.name in self.registry:
-            raise ConfigurationError("%s has already been registered" % event_class.name)
+            raise ConfigurationError(
+                "%s has already been registered" % event_class.name)
 
         # Copy on event only those parametters that are relevant
         event_communication_settings = {
@@ -181,7 +195,6 @@ class Gateway(object):
         if not initial_path:
             pass
 
-
     # TODO Check if still needed
     _subscriptions = {}
 
@@ -207,8 +220,10 @@ class Gateway(object):
         Rehidrates the event'''
         event_class = self.registry.get(event_name)
         if not event_class:
-            return False
-        event_class = self.registry[event_name]
+            if attr_or_item(self.settings, 'TELEGRAPHY_SEND_UNREGISTERED'):
+                event_class = BaseEvent.generic_event_factory(event_name)
+            else:
+                return False
         event_intance = event_class(serialized_data=event_data)
         self.publish_to_subscribers(event_intance)
         # TODO: Return something sane (defer?)
@@ -218,7 +233,6 @@ class Gateway(object):
         for conn in self.connections:
             pass
 
-
     def run(self):
         """Executes gateway server"""
         raise NotImplementedError()
@@ -227,3 +241,12 @@ class Gateway(object):
         """Returns registered pubsub events"""
         return ['http://telegraphy.machinalis.com/events#']
 
+    @property
+    def rpc_uri(self):
+        """WAMP URI for RPC calls"""
+        return attr_or_item(self.settings, 'TELEGRAPHY_RPC_URI')
+
+    @property
+    def event_prefix(self):
+        """WAMP PubSub prefix for events"""
+        return attr_or_item(self.settings, 'TELEGRAPHY_EVENT_PREFIX')
