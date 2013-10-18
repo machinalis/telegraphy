@@ -3,7 +3,11 @@
 {% load static %}
 <html>
    <head>
-      <title>Telegraphy Authentication Test</title>
+      <title>
+         {% block title %}
+            {% if title %}{{title}}{%else%}Telegraphy{%endif%}
+         {% endblock title %}
+      </title>
       <script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
       <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
       <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
