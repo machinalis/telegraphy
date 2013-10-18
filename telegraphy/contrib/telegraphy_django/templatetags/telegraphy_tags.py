@@ -1,3 +1,5 @@
+"""Template tags for Django templates"""
+
 from django import template
 
 from django.core.exceptions import ImproperlyConfigured
@@ -5,19 +7,12 @@ from socket import error as SocketError
 import errno
 from telegraphy.contrib.telegraphy_django import settings
 from telegraphy.gateway.base import GatewayProxy
-from telegraphy.utils import build_url_from_settings, extract_host_from_request
+from telegraphy.utils import (build_url_from_settings,
+                              extract_host_from_request,
+                              get_user)
 
 
 register = template.Library()
-
-def get_user(context):
-    """Gets user id and username from context"""
-    user = context['request'].user
-    if user.is_authenticated():
-        user_data = (user.pk, user.username)
-    else:
-        user_data = (None, None)
-    return user_data
 
 
 @register.simple_tag(takes_context=True)
@@ -42,6 +37,7 @@ def telegraphy_scripts():
     autobahn_url = settings.AUTOBAHN_URL
     return '<script type="text/javascript" src="%s"></script>' % autobahn_url
 
+
 @register.simple_tag(takes_context=True)
 def telegraphy_ws_url(context):
     """Returns the gateway web socket URL"""
@@ -54,7 +50,8 @@ def telegraphy_ws_url(context):
     host = extract_host_from_request(request)
     if settings.TELEGRAPHY_WS_HOST is not None:
         if settings.TELEGRAPHY_WS_HOST != host:
-            raise ImproperlyConfigured("TELEGRAPHY_WS_HOST and current host do not match!")
+            raise ImproperlyConfigured(
+                "TELEGRAPHY_WS_HOST and current host do not match!")
     return build_url_from_settings(settings)
 
 
