@@ -2,6 +2,13 @@
 {% load telegraphy_tags %}
 
       {% block extraheader %}
+      <style>
+         .container h1 {
+            background-image: url('{{ STATIC_URL }}telegraphy/img/logo.png');
+            background-repeat: no-repeat;
+            padding-left: 60px;
+         }
+      </style>
       <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
       <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
       <script>
@@ -49,31 +56,41 @@
                var eventName = getEventName('system');
                console.info("Subscribe to...", eventName);
                SESS.subscribe(eventName, onSystemEvent);
-               SESS.subscribe('http://telegraphy.machinalis.com/events#')
             }
+
             function onConnnectError(code, reason){
                if (code == ab.CONNECTION_UNSUPPORTED) {
                   window.location = "http://autobahn.ws/unsupportedbrowser";
                } else {
+                  console.log("Code", code, "Reason", reason);
                   $('#status').text("Error. Telegraphy server running?");
-                  console.log(reason);
                }
             }
-            var options = {
-               maxRetries: 100,
-               retryDelay: 1000
-            }
-            ab.connect(WS_URL, onConnectSuccess, onConnnectError, options);
 
-            $('#send_custom_events').click(function (){
-               var $dlg = $('<div/>').dialog({
+            function formToObject(form) {
+               var result = {};
+               $.each($(form).serializeArray(), function(i, o) {
+                  result[o['name']] = o['value'];
+               });
+               return result;
+            }
+
+
+            function showSendCustomEventDialog(){
+                  var $dlg = $('<div/>').dialog({
                   buttons: [
                      {
                         text: "Send!",
                         click: function (){
+                           var formData = formToObject($(this).find('form')),
+                               eventName = formData['event'];
+                           if (!eventName){
+                              alert("Can't send empty event");
+                              return;
+                           }
                            // Make RPC call to send event
                            var call = SESS.call('http://telegraphy.machinalis.com/rpc#publish',
-                                                'evento', {'a':1, 'b': 2});
+                                                eventName, {'a':1, 'b': 2});
                            call.then(function (){
                               console.info("RPC Event: OK", arguments)
                            },
@@ -91,7 +108,16 @@
                });
                $dlg.html($('#event_data_form form').clone());
                $dlg.dialog('open');
-            });
+            }
+
+            $('#send_custom_events').bind('click', showSendCustomEventDialog);
+
+            // Connection
+            var autobahnConnectionOptions = {
+               maxRetries: 100,
+               retryDelay: 1000
+            }
+            ab.connect(WS_URL, onConnectSuccess, onConnnectError, autobahnConnectionOptions);
          });
 
       </script>
@@ -100,7 +126,7 @@
       {% block content %}
 
 
-         <h1>Telegraphy Authentication test</h1>
+         <h1>Telegraphy Test</h1>
          <noscript>
             <span style="color: #f00; font-weight: bold;">
                You need to turn on JavaScript.
@@ -130,8 +156,8 @@
          <!-- Form to copy -->
          <div style="display: none;" id="event_data_form">
             <form>
-            Event name: <input placeholder="Event name">
-            Data: <textarea name="" id="" cols="30" rows="10" placeholder="Data">
+            Event name: <input placeholder="Event name" name="event">
+            Data: <textarea name="data" id="" cols="30" rows="10" placeholder="Data">
             </textarea>
             </form>
          </div>
