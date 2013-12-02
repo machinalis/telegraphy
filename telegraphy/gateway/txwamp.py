@@ -89,9 +89,10 @@ class WebAppXMLRPCInterface(xmlrpc.XMLRPC):
         """Generate auth token"""
         return self.gateway.get_auth_token()
 
-    def xmlrpc_send_event(self, event, data):
+    def xmlrpc_send_event(self, event):
         """Method called from the web app side to publish an event to clients"""
-        return self.gateway.on_event(event, data)
+        print event
+        return event  # self.gateway.on_event(event, data)
 
 
 class TxWAMPGateway(Gateway):
