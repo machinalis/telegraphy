@@ -59,6 +59,16 @@
                 // }
             }
 
+            var eventKeys = ['name', 'meta', 'data'];
+
+            function _checkIsValidEvent(event) {
+                for (var i = 0; i<eventKeys.length; i++) {
+                    var name = eventKeys[i];
+                    if (!event.hasOwnProperty(name)) {
+                        throw new Error("INVALID PACKAGE: missing attribute "+name);
+                    }
+                }
+            }
 
             function _subscribeRegisteredEvents () {
                 console.info("Registering events on connection success");
@@ -67,7 +77,10 @@
                     for (var i = 0; i < callback_list.length; i++) {
                         var callback = callback_list[i];
                         console.debug("Registering", eventNameURL, "to", callback);
-                        _session.subscribe(eventNameURL, callback);
+                        _session.subscribe(eventNameURL, function (_url, event) {
+                            _checkIsValidEvent(event);
+                            callback.call(window, event);
+                        });
                     }
                 }
             }
