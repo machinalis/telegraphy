@@ -1,13 +1,7 @@
-from django.db.models import Model, CharField
-from telegraphy.contrib.django_telegraphy.events import BaseModelEvent
+from django.db.models import Model, CharField, IntegerField
 
 
 class MyModel(Model):
     title = CharField(max_length=128)
-
-
-class MyModelEvents(BaseModelEvent):
-    model = MyModel
-    fields = ('title', )
-    name = 'telegraphy_demo.MyModel'
-
+    description = CharField(max_length=128)
+    count = IntegerField(default=0)

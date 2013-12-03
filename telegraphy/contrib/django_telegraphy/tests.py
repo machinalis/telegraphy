@@ -71,7 +71,7 @@ class BaseModelEventRegisterTests(TestCase):
         self.mock_get_model.assert_called_once_with()
 
     def test_post_save_is_connected_to_on_model_create_if_OP_CREATE(self):
-        self.event.operations = (BaseEventModel.OP_CREATE)
+        self.event.operations = (BaseEventModel.OP_CREATE, )
         with patch.object(post_save, 'connect') as m_conn:
             self.event.register()
             m_conn.assert_called_once_with(
