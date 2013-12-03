@@ -92,7 +92,8 @@ class WebAppXMLRPCInterface(xmlrpc.XMLRPC):
     def xmlrpc_send_event(self, event):
         """Method called from the web app side to publish an event to clients"""
         print event
-        return event  # self.gateway.on_event(event, data)
+        topicUri = self.gateway.event_prefix + '#' + event['name']
+        return self.gateway.dispatch(topicUri, event)
 
 
 class TxWAMPGateway(Gateway):
