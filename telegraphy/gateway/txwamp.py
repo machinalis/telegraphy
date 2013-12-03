@@ -64,12 +64,6 @@ class GatewayWampServerFactory(WampServerFactory):
     def onClientSubscribed(self, proto, topicUri):
         print "Client", proto, "subscribed to", topicUri
 
-        #import ipdb; ipdb.set_trace()
-
-        def dispatch_foo(fact, topicUri):
-            print "Sending ", topicUri
-            fact.dispatch(topicUri, {'a': 1, 'b': 3})
-        reactor.callLater(1, dispatch_foo, self, topicUri)
 
     def removeConnection(self, proto):
         self.connected_clients.remove(proto)
@@ -91,8 +85,8 @@ class WebAppXMLRPCInterface(xmlrpc.XMLRPC):
 
     def xmlrpc_send_event(self, event):
         """Method called from the web app side to publish an event to clients"""
-        print event
-        return event  # self.gateway.on_event(event, data)
+        return self.gateway.send(event)
+
 
 
 class TxWAMPGateway(Gateway):
@@ -132,6 +126,7 @@ class TxWAMPGateway(Gateway):
                                                 debugWamp=self.debug,
                                                 gateway=self
                                                 )
+        print self.factory
         self.factory.protocol = TelegraphyConnection
         self.factory.setProtocolOptions(allowHixie76=True)
         listenWS(self.factory)
@@ -142,3 +137,8 @@ class TxWAMPGateway(Gateway):
 
         if start_reactor:
             reactor.run()
+
+    def send(self, event):
+        topicUri = self.event_prefix + event['name']
+        print "Dispatching ", topicUri, event
+        self.factory.dispatch(topicUri, event)

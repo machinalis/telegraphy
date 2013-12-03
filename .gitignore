@@ -10,3 +10,4 @@ doc/build/
 build/*
 dist/*
 *.egg*
+demo_project/demo_db.sqlite3

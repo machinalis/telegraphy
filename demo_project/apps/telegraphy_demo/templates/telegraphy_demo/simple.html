@@ -17,11 +17,9 @@
                 var $event_catcher = $('#event_catcher');
 
                 Telegraphy.register(
-                    //'telegraphy_demo.MyModel'
-                    'system'
-                    , function (tEvent){
-                        console.log("Event");
-                        var new_line = $('<li/>').text("New instance");
+                    'telegraphy_demo.MyModel' , function (tEvent){
+
+                        var new_line = $('<li/>').text(tEvent.name);
                         $event_catcher.append(new_line);
                     }
                 );

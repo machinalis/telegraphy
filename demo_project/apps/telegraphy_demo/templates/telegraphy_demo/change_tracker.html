@@ -1,0 +1,62 @@
+{% load telegraphy_tags %}
+{% load static %}
+<html>
+    <head>
+        <title>Simple Telegraphy API Example</title>
+        <script src='{% static "telegraphy_demo/js/jquery-1.10.2.js" %}'></script>
+        {% telegraphy_scripts %}
+    </head>
+    <body>
+        <h1>Catching model changes!</h1>
+        <ul id="event_catcher">
+
+        </ul>
+        <script>
+            (function (){
+                // Protect global namepsace pollution
+                var $event_catcher = $('#event_catcher');
+                function makeListFromObject(anObject) {
+                    var ul = $('<ul/>');
+                    for (var name in anObject) {
+                        var li = $('<li/>');
+                        li.html('<b>'+name+'</b>: '+
+                            '<span class="'+name+'">'+anObject[name]+'</span>');
+                        ul.append(li);
+                    }
+                    return ul;
+                }
+
+                function applyChangesToElement(element, anObject) {
+                    for (var name in anObject) {
+                        element.find('.'+name).text(anObject[name]);
+                    }
+                }
+
+                Telegraphy.register(
+                    'telegraphy_demo.MyModel' , function (tEvent){
+                        var id = tEvent.name.replace('.', '_')+'_'+tEvent.data.pk;
+
+                        switch (tEvent.meta.event_type) {
+                            case 'create':
+                                console.log("Create");
+                                var new_line = $('<li/>').text(tEvent.meta.verbose_name);
+                                new_line.append(makeListFromObject(tEvent.data));
+                                new_line.attr('id', id);
+                                $event_catcher.append(new_line);
+                                break;
+                            case 'update':
+                                console.log("Update");
+                                applyChangesToElement($('#'+id), tEvent.data);
+                                break;
+                            case 'delete':
+                                $('#'+id).remove();
+                                break;
+                        }
+
+                    }
+                );
+
+            })();
+        </script>
+    </body>
+</html>

@@ -9,4 +9,7 @@ urlpatterns = patterns('',
     url(r'^simple/',
         TemplateView.as_view(template_name="telegraphy_demo/simple.html"),
         name='simple'),
+    url(r'^change_tracker/',
+        TemplateView.as_view(template_name="telegraphy_demo/change_tracker.html"),
+        name='change_tracker'),
 )
