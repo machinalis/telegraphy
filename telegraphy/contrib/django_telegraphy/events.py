@@ -41,7 +41,8 @@ class BaseEventModel(object):
         if not self.name:
             self.name = self.get_default_name()
         gateway_proxy_url = settings.TELEGRAPHY_RPC_PARAMS['url']
-        self.gateway_proxy = xmlrpclib.Server(gateway_proxy_url)
+        self.gateway_proxy = xmlrpclib.Server(gateway_proxy_url,
+                                              allow_none=True)
 
     def get_default_name(self):
         model = self.get_target_model()
@@ -100,12 +101,20 @@ class BaseEventModel(object):
         else:
             data = self.serialize_event_data(instance)
         meta = {'event_type': event_type}
-        event = json.dumps({'name': self.name, 'meta': meta, 'data': data})
+        event = {'name': self.name, 'meta': meta, 'data': data}
         self.gateway_proxy.send_event(event)
 
     def serialize_event_data(self, instance):
         """Return a JSON representation of the model instance's fields."""
-        return serializers.serialize("json", [instance], fields=self.fields)
+        data = {}
+        if not self.fields:
+            # serializar todos los campos (menos los de self.exclude)
+            pass
+        else:
+            for field in self.fields:
+                data[field] = getattr(instance, field, '')
+
+        return data
 
 
 def autodiscover():

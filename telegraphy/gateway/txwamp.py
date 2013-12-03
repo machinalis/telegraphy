@@ -81,7 +81,7 @@ class WebAppXMLRPCInterface(xmlrpc.XMLRPC):
 
     def __init__(self, *args, **kwargs):
         self.gateway = kwargs.pop('gateway')
-        xmlrpc.XMLRPC.__init__(self, *args, **kwargs)
+        xmlrpc.XMLRPC.__init__(self, allowNone=True, useDateTime=True)
 
     # All exposed methods must start with xmlrpc
 
