@@ -1,8 +1,8 @@
 """Real-time, Model-based events"""
 
+import datetime
 import importlib
 import inspect
-import json
 import xmlrpclib
 
 from telegraphy.contrib.django_telegraphy import settings
@@ -36,19 +36,34 @@ class BaseEventModel(object):
     exclude = None
     operations = (OP_CREATE, OP_UPDATE, OP_DELETE)
     name = None
+    verbose_name = None
 
     def __init__(self):
-        if not self.name:
-            self.name = self.get_default_name()
+        self.name = self.name or self.get_default_name()
+        self.verbose_name = self.verbose_name or self.get_default_verbose_name()
+
         gateway_proxy_url = settings.TELEGRAPHY_RPC_PARAMS['url']
         self.gateway_proxy = xmlrpclib.Server(gateway_proxy_url,
                                               allow_none=True)
 
     def get_default_name(self):
+        """
+        The event's default name (if none is given) is the related model's app
+        followed by a dot, followed by the model's name.
+
+        """
         model = self.get_target_model()
         module = model.__module__.split('.')[-2]  # Miss the prefix and .models
         return '.'.join([module, model.__name__])
 
+    def get_default_verbose_name(self):
+        """
+        The event's default name (if none is given) is the related model's app
+        followed by a dot, followed by the model's name.
+
+        """
+        model = self.get_target_model()
+        return model._meta.verbose_name
 
     def get_target_model(self):
         if type(self.__class__) == BaseEventModel:
@@ -95,13 +110,21 @@ class BaseEventModel(object):
         configured gateway.
 
         """
-        data = None
+        # Timestamp formatted with a profile of ISO 8601
+        # http://www.w3.org/TR/NOTE-datetime
+        timestamp = datetime.datetime.utcnow()
+        timestamp = timestamp.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        meta = {'event_type': event_type,
+                'verbose_name': self.verbose_name,
+                'timestamp': timestamp}
+
         if hasattr(instance, 'serialize_event_data'):
             data = instance.serialize_event_data()
         else:
             data = self.serialize_event_data(instance)
-        meta = {'event_type': event_type}
-        event = {'name': self.name, 'meta': meta, 'data': data}
+        event = {'name': self.name,
+                 'meta': meta,
+                 'data': data}
         self.gateway_proxy.send_event(event)
 
     def serialize_event_data(self, instance):
