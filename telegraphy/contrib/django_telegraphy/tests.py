@@ -3,7 +3,7 @@ from mock import patch, MagicMock
 # from django.db.models.signals import post_save, post_delete
 from django.utils.unittest import TestCase
 
-from events import BaseEventModel, post_save, post_delete
+from events import BaseEventModel, post_save, post_delete, get_registered_events
 
 
 class BaseModelEventSendToGatewayTests(TestCase):
@@ -62,18 +62,46 @@ class BaseModelEventRegisterTests(TestCase):
         self.addCleanup(patcher.stop)
         self.event = BaseEventModel()
         self.event.operations = ()
+
         patcher = patch.object(self.event, 'get_target_model')
         self.mock_get_model = patcher.start()
+        self.addCleanup(patcher.stop)
+
+        patcher = patch.object(post_save, 'connect')
+        self.mock_connect = patcher.start()
         self.addCleanup(patcher.stop)
 
     def test_get_target_model_is_called(self):
         self.event.register()
         self.mock_get_model.assert_called_once_with()
 
-    def test_post_save_is_connected_to_on_model_create_if_OP_CREATE(self):
+    def test_no_operations_listed_then_post_save_not_connected(self):
+        self.event.operations = ()
+        self.event.register()
+        self.assertEqual(self.mock_connect.call_count, 0)
+
+    def test_if_OP_CREATE_then_post_save_is_connected_to_on_model_create_(self):
         self.event.operations = (BaseEventModel.OP_CREATE, )
-        with patch.object(post_save, 'connect') as m_conn:
+        self.event.register()
+        self.mock_connect.assert_called_once_with(
+            self.event.on_model_create, sender=self.mock_get_model.return_value)
+
+    def test_if_OP_UPDATE_then_post_save_is_connected_to_on_model_update(self):
+        self.event.operations = (BaseEventModel.OP_UPDATE, )
+        self.event.register()
+        self.mock_connect.assert_called_once_with(
+            self.event.on_model_update, sender=self.mock_get_model.return_value)
+
+    def test_if_OP_DELETE_then_post_save_is_connected_to_on_model_delete(self):
+        self.event.operations = (BaseEventModel.OP_DELETE, )
+        with patch.object(post_delete, 'connect') as mock_connect:
             self.event.register()
-            m_conn.assert_called_once_with(
-                self.event.on_model_create,
-                sender=self.mock_get_model.return_value)
+            mock_connect.assert_called_once_with(
+            self.event.on_model_delete, sender=self.mock_get_model.return_value)
+
+    def test_any_operation_then_event_added_to_module_events(self):
+        self.event.operations = MagicMock()
+        assert len(get_registered_events()) == 0
+        self.event.operations = (BaseEventModel.OP_CREATE, )
+        self.event.register()
+        self.assertItemsEqual(get_registered_events(), [self.event])
