@@ -11,7 +11,10 @@ from telegraphy.utils import (build_url_from_settings,
                               extract_host_from_request,
                               get_user)
 from django.template.loader import render_to_string
-
+try:
+    import json
+except ImportError:
+    import simple_json as json
 
 
 
@@ -39,14 +42,17 @@ def auth_token(context):
 def telegraphy_scripts(context):
     """Creates telegrphy javascript inclusions and settings"""
 
-    registered_model_events = repr([])
-    return render_to_string('telegraphy_django/telegraphy_scripts.html', {
+    registered_model_events = json.dumps([])
+
+    context =  {
         'TELEGRAPHY_EVENT_PREFIX': settings.TELEGRAPHY_EVENT_PREFIX,
         'TELEGRAPHY_RPC_URI': settings.TELEGRAPHY_RPC_URI,
         'TELEGRAPHY_WS_URL': telegraphy_ws_url(context),
         'AUTOBAHN_URL': settings.AUTOBAHN_URL,
         'registered_model_events': registered_model_events,
-    })
+    }
+
+    return render_to_string('django_telegraphy/telegraphy_scripts.html',context)
 
 
 @register.simple_tag(takes_context=True)
