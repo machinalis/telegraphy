@@ -1,5 +1,5 @@
 from django.db.models import Model, CharField
-from telegraphy.contrib.telegraphy_django.events import BaseModelEvent
+from telegraphy.contrib.django_telegraphy.events import BaseModelEvent
 
 
 class MyModel(Model):

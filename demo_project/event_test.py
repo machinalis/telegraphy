@@ -3,7 +3,7 @@ telegraphy_path = os.path.join(os.path.dirname(__file__), '..')
 sys.path.append(telegraphy_path)
 os.environ['DJANGO_SETTINGS_MODULE'] = 'demo_project.settings'
 
-from telegraphy.contrib.telegraphy_django import settings
+from telegraphy.contrib.django_telegraphy import settings
 from telegraphy import Gateway, BaseEvent
 
 g = Gateway.from_settings(settings)
