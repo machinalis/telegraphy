@@ -85,7 +85,8 @@ class BaseEventModel(object):
         if self.OP_DELETE in self.operations:
             post_delete.connect(self.on_model_delete, sender=sender)
 
-        _events.append(self)
+        if self.operations:
+            _events.append(self)
 
     def send_to_gateway(self, instance, event_type):
         """
