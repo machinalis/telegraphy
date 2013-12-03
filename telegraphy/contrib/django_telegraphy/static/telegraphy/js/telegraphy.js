@@ -81,6 +81,12 @@
 
             function onConnnectError (errorType, errorMessage) {
                 console.error(arguments);
+                switch (errorType) {
+                    case ab.CONNECTION_RETRIES_EXCEEDED:
+                        console.error("Retrying in 5");
+                        window.setTimeout(connect, 5);
+                        break;
+                }
             }
             // Connect Telegraphy to server on document load
 
@@ -115,4 +121,5 @@
     Telegraphy.EVENT_URL_PREFIX = null;
     Telegraphy.RPC_URL_PREFIX = null;
     Telegraphy.WS_URL = null;
+    Telegraphy.CONNECT_FOREVER = true;
 })();
