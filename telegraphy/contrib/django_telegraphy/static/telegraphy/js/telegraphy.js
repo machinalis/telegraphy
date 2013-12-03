@@ -88,14 +88,32 @@
                         break;
                 }
             }
+
+            function getTelegraphyWSURL() {
+                if (Telegraphy.WS_URL === null) {
+                    return new Error("Missconfigured");
+                }
+                var parser = document.createElement('a');
+                parser.href = Telegraphy.WS_URL;
+                if (parser.protocol !== 'ws:' && parser.protocol != 'wss:') {
+                    throw new Error("Bad protocol, check TELEGRAPHY_URL: "+
+                        parser.protocol);
+                }
+                if (parser.hostname == 'localhost' || parser.hostname == '127.0.0.1') {
+                    if (window.location.hostname != parser.hostname) {
+                        console.warning("Fixing host (localhost) for websocket server");
+                        parser.hostname = window.location.hostname;
+                    }
+                }
+                return parser.toString();
+            }
+
             // Connect Telegraphy to server on document load
-
-
             function connect() {
                 console.info("Making connection");
                 // TODO: Check valid constants
                 ab.connect(
-                        Telegraphy.WS_URL,
+                        getTelegraphyWSURL(),
                         onConnectSuccess,
                         onConnnectError
                 );
