@@ -114,7 +114,7 @@
                 }
                 if (parser.hostname == 'localhost' || parser.hostname == '127.0.0.1') {
                     if (window.location.hostname != parser.hostname) {
-                        console.warning("Fixing host (localhost) for websocket server");
+                        console.warn("Fixing host (localhost) for websocket server");
                         parser.hostname = window.location.hostname;
                     }
                 }
