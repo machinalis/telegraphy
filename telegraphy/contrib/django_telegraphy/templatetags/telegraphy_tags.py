@@ -5,7 +5,7 @@ from django import template
 from django.core.exceptions import ImproperlyConfigured
 from socket import error as SocketError
 import errno
-from telegraphy.contrib.telegraphy_django import settings
+from telegraphy.contrib.django_telegraphy import settings
 from telegraphy.gateway.base import GatewayProxy
 from telegraphy.utils import (build_url_from_settings,
                               extract_host_from_request,
