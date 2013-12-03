@@ -19,7 +19,7 @@
                 Telegraphy.register(
                     //'telegraphy_demo.MyModel'
                     'system'
-                    , function (meta, data){
+                    , function (tEvent){
                         console.log("Event");
                         var new_line = $('<li/>').text("New instance");
                         $event_catcher.append(new_line);
