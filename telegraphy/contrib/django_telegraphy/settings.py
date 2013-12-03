@@ -1,6 +1,11 @@
 from django.conf import settings as django_settings
 
 DEBUG = django_settings.DEBUG
+# The autodiscover will search for modules named EVENTS_MODULE_NAME in each
+# installed app, to register the existing events.
+# If a file other than events.py wants to be used, this setting must be changed.
+EVENTS_MODULE_NAME = 'events'
+
 # Engine for Gateway
 TELEGRAPHY_ENGINE = getattr(django_settings, 'TELEGRAPHY_ENGINE',
                             'telegraphy.gateway.txwamp.TxWAMPGateway')
