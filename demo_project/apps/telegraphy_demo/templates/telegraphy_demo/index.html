@@ -109,8 +109,58 @@
                $dlg.html($('#event_data_form form').clone());
                $dlg.dialog('open');
             }
+            /**
+             *
+             */
+            function currentSubscriptions(connection) {
+
+            }
+            /*
+             *
+             *
+             */
+            function subscribeToCustomEvent() {
+               var $dlg = $('<div></div>').dialog({
+                  title: "Subscribe to custom events",
+                  buttons: [
+                     {
+                        text: "Subscribe",
+                        click: function () {
+                           var event_text = $dlg.find('form input').val();
+                           var event_name = getEventName(event_text);
+
+                           SESS.subscribe(event_name, onSystemEvent);
+                           $dlg.dialog('close');
+                        }
+                     }
+
+                  ],
+                  autoOpen: false,
+                  close: function () {
+                     $(this).dialog('destroy');
+                  }
+               });
+               var markup = $('<form/>');
+               markup.append($('<legend/>').text("Event will be automatically sent within 2 seconds"));
+               var ul = $('<ul>');
+               $.each(SESS._subscriptions, function (k, v){
+                  console.log("Showing subscription", k);
+                  var text = k.slice(k.lastIndexOf('/')+1);
+                  ul.append($('<li>').text(text));
+               });
+               markup.append(ul);
+               markup.append($('<input placeholder="Event Name..." name="event_name">'));
+               $dlg.html(markup);
+               $dlg.dialog('open');
+            }
+
+            function clearLogs () {
+               $('#event-logs').find('li').remove();
+            }
 
             $('#send_custom_events').bind('click', showSendCustomEventDialog);
+            $('#subscribe_custom_event').bind('click', subscribeToCustomEvent);
+            $('#clear_log').bind('click', clearLogs);
 
             // Connection
             var autobahnConnectionOptions = {
@@ -126,7 +176,7 @@
       {% block content %}
 
 
-         <h1>Telegraphy Test</h1>
+         <h1>Telegraphy Test Bench</h1>
          <noscript>
             <span style="color: #f00; font-weight: bold;">
                You need to turn on JavaScript.
@@ -146,6 +196,10 @@
             <button id="subscribe_custom_event" type="button" class="btn btn-default">
                <span class="glyphicon glyphicon-pushpin"></span>
                Subscribe to custom event
+            </button>
+            <button id="clear_log" type="button" class="btn btn-default">
+               <span class="glyphicon glyphicon-trash"></span>
+               Clear Log
             </button>
          </div>
          <!-- Logging -->
