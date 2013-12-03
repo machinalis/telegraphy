@@ -4,7 +4,7 @@ import json
 import xmlrpclib
 
 from django.core import serializers
-from django.db.models.signals import pre_save, post_save, post_delete
+from django.db.models.signals import post_save, post_delete
 
 
 class BaseModelEvent(object):
