@@ -106,13 +106,18 @@ class BaseEventModel(object):
 
     def serialize_event_data(self, instance):
         """Return a JSON representation of the model instance's fields."""
+
         data = {}
+        fields = []
+        excluded = self.exclude or []
+
         if not self.fields:
-            # serializar todos los campos (menos los de self.exclude)
-            pass
+            fields = [f.name for f in instance._meta.fields if field not in excluded]
         else:
-            for field in self.fields:
-                data[field] = getattr(instance, field, '')
+            fields = self.fields
+
+        for field in fields:
+            data[field] = getattr(instance, field, '')
 
         return data
 
