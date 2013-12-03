@@ -64,14 +64,6 @@ class GatewayWampServerFactory(WampServerFactory):
     def onClientSubscribed(self, proto, topicUri):
         print "Client", proto, "subscribed to", topicUri
 
-        #import ipdb; ipdb.set_trace()
-
-        def dispatch_foo(fact, topicUri):
-            print "Sending ", topicUri
-            fact.dispatch(topicUri, {'a': 1, 'b': 3})
-            print fact
-        reactor.callLater(1, dispatch_foo, self, topicUri)
-
 
     def removeConnection(self, proto):
         self.connected_clients.remove(proto)
