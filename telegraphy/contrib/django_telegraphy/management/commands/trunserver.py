@@ -26,7 +26,6 @@ class RootResource(resource.Resource):
         return self.wsgi_resource
 
 
-
 class Command(BaseCommand):
 
     help_text = '''Twited based django server'''
