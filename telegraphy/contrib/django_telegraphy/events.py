@@ -10,6 +10,8 @@ from django.core import serializers
 from django.db.models.signals import post_save, post_delete
 
 
+ISO8601_TIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
+
 # This list keeps a possibly out-of-data registry of registered events.
 # TODO: a method to update the list through the Gateway
 _events = []
@@ -113,36 +115,32 @@ class BaseEventModel(object):
         # Timestamp formatted with a profile of ISO 8601
         # http://www.w3.org/TR/NOTE-datetime
         timestamp = datetime.datetime.utcnow()
-        timestamp = timestamp.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        timestamp = timestamp.strftime(ISO8601_TIME_FORMAT)
         meta = {'event_type': event_type,
                 'verbose_name': self.verbose_name,
                 'timestamp': timestamp}
 
-        if hasattr(instance, 'serialize_event_data'):
-            data = instance.serialize_event_data()
+        if hasattr(instance, 'to_dict'):
+            data = instance.to_dict()
         else:
-            data = self.serialize_event_data(instance)
+            data = self.to_dict(instance)
         event = {'name': self.name,
                  'meta': meta,
                  'data': data}
         self.gateway_proxy.send_event(event)
 
-    def serialize_event_data(self, instance):
-        """Return a JSON representation of the model instance's fields."""
+    def to_dict(self, instance):
+        """Return a dict representation of the model instance's fields."""
 
         data = {}
-        fields = []
         excluded = self.exclude or []
-
         if not self.fields:
-            fields = [f.name for f in instance._meta.fields if field not in excluded]
+            fields = [f.name for f in instance._meta.fields
+                      if f.name not in excluded]
         else:
             fields = self.fields
 
-        for field in fields:
-            data[field] = getattr(instance, field, '')
-
-        return data
+        return dict((field, getattr(instance, field, '')) for field in fields)
 
 
 def autodiscover():

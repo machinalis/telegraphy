@@ -3,64 +3,109 @@ from mock import patch, MagicMock
 # from django.db.models.signals import post_save, post_delete
 from django.utils.unittest import TestCase
 
-from events import BaseEventModel, post_save, post_delete, get_registered_events
+from events import (BaseEventModel, post_save, post_delete,
+                    get_registered_events, ISO8601_TIME_FORMAT)
 
 
-class BaseModelEventSendToGatewayTests(TestCase):
+class BaseModelEventBaseTestClass(TestCase):
     def setUp(self):
-
         patcher = patch.object(BaseEventModel, 'get_default_name')
         patcher.start()
         self.addCleanup(patcher.stop)
-
+        patcher = patch.object(BaseEventModel, 'get_default_verbose_name')
+        patcher.start()
+        self.addCleanup(patcher.stop)
         self.event = BaseEventModel()
+
+
+class BaseModelEventSendToGatewayTests(BaseModelEventBaseTestClass):
+    def setUp(self):
+        super(BaseModelEventSendToGatewayTests, self).setUp()
         self.event.name = 'TestEventModel'
         self.event.gateway_proxy = MagicMock()
         self.instance = MagicMock()
-        self.instance.serialize_event_data = MagicMock()
+        self.instance.to_dict = MagicMock()
 
-        patcher = patch('json.dumps')
-        self.mock_json = patcher.start()
-        self.addCleanup(patcher.stop)
 
-    def test_if_instance_has_serialize_event_data_it_is_used(self):
+    def test_if_instance_has_to_dict_it_is_used(self):
         self.event.send_to_gateway(self.instance, None)
-        self.instance.serialize_event_data.assert_called_once_with()
+        self.instance.to_dict.assert_called_once_with()
 
-    def test_instance_dont_have_serialize_event_data_self_method_is_used(self):
-        delattr(self.instance, 'serialize_event_data')
-        with patch.object(self.event, 'serialize_event_data') as mock_serialize:
+    def test_instance_dont_have_to_dict_self_method_is_used(self):
+        delattr(self.instance, 'to_dict')
+        with patch.object(self.event, 'to_dict') as mock_serialize:
             self.event.send_to_gateway(self.instance, None)
             mock_serialize.assert_called_once_with(self.instance)
 
-    def test_json_dumps_is_called_the_correct_event_data_as_a_dict(self):
-        event_type = 'test event type'
-        self.event.send_to_gateway(self.instance, event_type)
-        self.mock_json.assert_called_once_with({
-            'name': self.event.name,
-            'meta': {'event_type': event_type},
-            'data': self.instance.serialize_event_data.return_value})
-
-    def test_serialize_event_data_uses_django_serializers(self):
-        delattr(self.instance, 'serialize_event_data')
-        with patch('django.core.serializers.serialize') as mock_serialize:
-            self.event.send_to_gateway(self.instance, None)
-            mock_serialize.assert_called_once_with(
-                'json', [self.instance], fields=self.event.fields)
-
     def test_gateway_proxy_send_event_is_called(self):
-        self.event.send_to_gateway(self.instance, None)
-        self.event.gateway_proxy.send_event.assert_called_once_with(
-            self.mock_json.return_value)
+        test_type = MagicMock()
+        #from telegraphy.contrib.django_telegraphy.events import datetime
+        with patch('telegraphy.contrib.django_telegraphy.events.datetime'
+                ) as mock_time:
+            self.event.send_to_gateway(self.instance, test_type)
+            timestamp = mock_time.datetime.utcnow.return_value.strftime.return_value
+            meta = {'event_type': test_type,
+                    'verbose_name': self.event.verbose_name,
+                    'timestamp': timestamp}
+            expected_data =  {'name': self.event.name,
+                              'meta': meta,
+                              'data': self.instance.to_dict.return_value}
+            self.event.gateway_proxy.send_event.assert_called_once_with(expected_data)
+
+    def test_event_meta_timestamp_has_ISO_format(self):
+        with patch('telegraphy.contrib.django_telegraphy.events.datetime'
+                ) as mock_time:
+            self.event.send_to_gateway(self.instance, None)
+            event = self.event.gateway_proxy.send_event.call_args[0][0]
+            timestamp_format = mock_time.datetime.utcnow.return_value.strftime
+            time_fmt = timestamp_format.call_args[0][0]
+            self.assertEqual(time_fmt, ISO8601_TIME_FORMAT)
 
 
-class BaseModelEventRegisterTests(TestCase):
+class BaseModelEventToDictTests(BaseModelEventBaseTestClass):
 
     def setUp(self):
-        patcher = patch.object(BaseEventModel, 'get_default_name')
-        patcher.start()
-        self.addCleanup(patcher.stop)
-        self.event = BaseEventModel()
+        super(BaseModelEventToDictTests, self).setUp()
+        self.instance = MagicMock()
+        self.instance.foo = 'bar'
+        self.instance.chan = 99
+
+    def test_fields_is_defined_then_only_they_appear_in_output(self):
+        self.event.fields = ('foo',)
+        data = self.event.to_dict(self.instance)
+        self.assertDictEqual(data, {'foo': 'bar'})
+
+    def test_fields_defined_not_in_instance_then_set_empty(self):
+        self.event.fields = ('mor', )
+        self.instance.mor = None
+        delattr(self.instance, 'mor')
+        data = self.event.to_dict(self.instance)
+        self.assertEqual(data['mor'], '')
+
+    def test_fields_not_defined_then_instance__meta_fields_in_output(self):
+        self.event.fields = None
+        field = MagicMock()
+        field.name = 'mor'
+        setattr(self.instance, field.name, 'xxx')
+        self.instance._meta.fields = [field]
+        data = self.event.to_dict(self.instance)
+        self.assertEqual(data[field.name], 'xxx')
+
+    def test_fields_not_defined_then_in_output_if_not_in_exclude(self):
+        self.event.fields = None
+        self.event.exclude = ('mor', )
+        field = MagicMock()
+        field.name = 'mor'
+        setattr(self.instance, field.name, 'xxx')
+        self.instance._meta.fields = [field]
+        data = self.event.to_dict(self.instance)
+        self.assertNotIn('mor', data)
+
+
+class BaseModelEventRegisterTests(BaseModelEventBaseTestClass):
+
+    def setUp(self):
+        super(BaseModelEventRegisterTests, self).setUp()
         self.event.operations = ()
 
         patcher = patch.object(self.event, 'get_target_model')
