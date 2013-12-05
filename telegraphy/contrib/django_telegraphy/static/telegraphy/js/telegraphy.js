@@ -70,17 +70,26 @@
                 }
             }
 
+            // Avoid callback to be bound to iteration values of for
+            function makeSubscribableCallback(callback) {
+                return function (_evnetTopic, eventData) {
+                    _checkIsValidEvent(eventData);
+                    callback.call(window, eventData);
+                };
+            }
+
+
             function _subscribeRegisteredEvents () {
                 console.info("Registering events on connection success");
                 for (var eventNameURL in _subscriptions) {
                     var callback_list = _subscriptions[eventNameURL];
                     for (var i = 0; i < callback_list.length; i++) {
                         var callback = callback_list[i];
-                        console.debug("Registering", eventNameURL, "to", callback);
-                        _session.subscribe(eventNameURL, function (_url, event) {
-                            _checkIsValidEvent(event);
-                            callback.call(window, event);
-                        });
+
+                        console.debug("Registering", eventNameURL);
+                        _session.subscribe(eventNameURL,
+                                           makeSubscribableCallback(callback)
+                        );
                     }
                 }
             }
@@ -93,6 +102,7 @@
             }
 
             function onConnnectError (errorType, errorMessage) {
+                _session = null;
                 console.error(arguments);
                 switch (errorType) {
                     case ab.CONNECTION_RETRIES_EXCEEDED:
