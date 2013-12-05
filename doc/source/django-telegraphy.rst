@@ -10,20 +10,18 @@ that must be taken into account that are not trivial to integrate with Django: W
 message queues, advanced key-value stores, etc.
 
 Telegraphy takes care of all that. It provides a simple, class-based way to provide your models with the capability to
-generate events. These will reach the client application, in near-real-time.
+generate events. These will reach the client application, in near-real-time. Besides:
 
-Also provided is a set of template tags and a very simple JS API to make real-time Django apps a reality.
-
-    - Management command for server (run with minimal settings)
-    - Automatic signals-based CUD events (Create, Update, Delete)
-    - Custom events definitions
-    - Template tags for easy configuration
-
-This module allows to define events by inheriting from a base telegraphy BaseEventModel class.
-Different specialized type of events are provided: guaranteed delivery, with TTL, etc.
+    - A management command to run the :doc:`gateway`.
+    - Automatic signals-based CUD events (Create, Update, Delete).
+    - Custom events definitions.
+    - Template tags for easy configuration.
+    - A very simple `JS API`_ to make real-time Django apps a reality.
 
 
-.. _client api:
+
+
+.. _JS API:
 
 JavaScript API
 ****************

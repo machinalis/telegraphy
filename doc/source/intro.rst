@@ -27,9 +27,9 @@ Overview
 --------
 
 The Telegraphy project's architecture has three main components:
- * A web-application that registers and emits events.
- * A gateway_ is a scalable, high-performance, asynchronous, networking engine.
- * A `client api`_ which talks `WAMP <http://wamp.ws//>`_ (through a WebSocket) with a *Gateway*.
+ * A **web-application** that registers and emits events.
+ * A **gateway** is a scalable, high-performance, asynchronous, networking engine.
+ * A **client** api which talks `WAMP <http://wamp.ws//>`_ (through a WebSocket) with a *Gateway*.
    This is normally a JavaScript loaded from a web-page.
 
 .. image:: _static/architecture-protocol-stack.png
@@ -53,39 +53,8 @@ The gateway is implemented using `Twisted <http://twistedmatrix.com/>`_.
     Also, template tags and a Javascript API (based on `AutobahnJS <http://autobahn.ws/js>`_) are provided.
     These make it really easy to handle the events on the client side.
 
-Gateway_
+:doc:`Gateway <gateway>`
     Currently, a Twisted-based server using `AutobahnPython <http://autobahn.ws/python/>`_).
 
 The web-app and gateway communicate through `XML-RPC <https://twistedmatrix.com/documents/12.2.0/web/howto/xmlrpc.html>`_
 with a shared-configuration approach.
-
-
-.. _gateway:
-
-Gateway
--------
-
-Provides an asynchronous-events management server, or **Gateway**.
-
-The gateway has the responsability to assure continuous service. Changes in configuration or events definitions must be
-transparent for the client (if possible). Otherwise, specific resources must be design in order to be able to
-implement client-side mechanisms to remain "connected" (reconnect, etc).
-
-Client representatives identification: on connection, the Gateway provides a unique identifier (token).
-The representatives saves the token in a cookie. The cookie has an expiration time defined by the Gateway.
-
-Persistent subscriptions: a client may decide that a given subscription to an event is 'permanent'.
-The subscription mechanism provided by the protocol must include some parameter to indicate this situation.
-
-
-- Real Time Events
-    - Authentication
-    - Subscription handling
-        - Public vs Authnticated Events
-        - Subscription management (client or event based)
-    - Event management
-        - Class based event definition
-        - Event query language
-            - Performance
-            - Simplified client side subscription handling
-            - Easy channel emulation
