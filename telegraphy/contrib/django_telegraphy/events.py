@@ -132,7 +132,6 @@ class BaseEventModel(object):
     def to_dict(self, instance):
         """Return a dict representation of the model instance's fields."""
 
-        data = {}
         excluded = self.exclude or []
         if not self.fields:
             fields = [f.name for f in instance._meta.fields
