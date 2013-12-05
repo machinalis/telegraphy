@@ -12,4 +12,7 @@ urlpatterns = patterns('',
     url(r'^change_tracker/',
         TemplateView.as_view(template_name="telegraphy_demo/change_tracker.html"),
         name='change_tracker'),
+    url(r'^$',
+        TemplateView.as_view(template_name='telegraphy_demo/demo.html'),
+        name='demo'),
 )
