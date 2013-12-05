@@ -25,7 +25,7 @@ Components
 
 The Telegraphy project's architecture has three main components:
  * A web-application that registers and emits events. The current project includes a very powerful `Django app`_.
- * A Gateway_ is an scalable, high-performance, asynchronous, networking engine.
+ * A Gateway_ is a scalable, high-performance, asynchronous, networking engine.
  * A `client api`_ which talks `WAMP <http://wamp.ws//>`_ (through a WebSocket) with a *Gateway*.
    This is normally a JavaScript loaded from a web-page. An API is provided, based on `AutobahnJS <http://autobahn.ws/js>`_.
 
@@ -35,6 +35,8 @@ The Telegraphy project's architecture has three main components:
 
 Gateway
 ********
+
+Provides an asynchronous-events management server, or **Gateway**.
 
 The gateway has the responsability to assure continuous service. Changes in configuration or events definitions must be transparent for the client (if possible). Otehrwise, specific resources muts be design in order to be able to implement client-side mechanisms to remain "connected" (reconnect, etc).
 
@@ -58,15 +60,35 @@ Persitent subscriptions: a client may decide that a given subscription to an eve
 
 .. _Django app:
 
-Django Telegraphy
+django-telegraphy
 *****************
+
+Telegraphy aims to facilitate the integration of real-time features into a Django project.
+
+Django is not yet prepared for handling real time web features. There are a lot of issues and technologies
+that must be taken into account that are not trivial to integrate with Django: like WebSockets, asynchronous servers,
+message queues, advanced key-value stores, etc.
+
+Telegraphy takes care of all that. It provides a simple, class-based, way to provide your models with the capability to
+generate events. These will reach you client application, in near-real-time.
+
+Also provided is a set of template tags and a very simple JS API to make real-time Django apps a reality.
+
+
     - Management command for server (run with minimal settings)
     - Automatic model based CUD events (Create, Update, Delete)
     - Custom Event definitions
     - Template tags for easy configuration
 
-This module allows to define events by inheriting from a base telegraphy.Event class.
+This module allows to define events by inheriting from a base telegraphy. Event class.
 Different specialized type of events are provided: guaranteed delivery, with TTL, etc.
+
+Includes the following features:
+
+    - Simple management management command to run an asynchronous-events server.
+    - Generic model signal based *create*, *update*, *delete* events.
+    - Custom events definitions.
+    - Template tags and a JavaScript API for easy events management on the frontend.
 
 
 

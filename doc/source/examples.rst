@@ -1,27 +1,45 @@
 Examples
 =========
 
-The django_telegraphy app allows you to easily extend your models so that they generate events
-on creation, update or delete. Those events will reach your front end in real time.
+- Create an `events.py` file in your app's directory (next to the `events.py` and `urls.py`).
+- For every model you want to generate events, create a sub-class of `BaseEventModel`::
 
-Simply install the django_telegraphy app in your Django project. Then run the following command
-in parallel to your web-server:
-
-.. code-block:: none
-
-    python manage.py run_telegraph
-
-Extend your models so that they automatically generate events: create an ``events.py`` file next to your ``models.py``
-
-.. code-block:: python
-
-    from apps.telegraphy.events import DjangoEvent
-    from apps.myapp.models import MyModel
+    from models import MyModel
+    from telegraphy.contrib.django_telegraphy.events import BaseEventModel
 
 
-    class MyModelEvents(DjangoEvent):
+    class MyEventsModel(BaseEventModel):
+        model = MyModel
 
-        class Meta:
-            model = MyModel
+- Run the *telegraph* server::
 
-And that's it! Every time you create, update or delete an instance of your model, an event will reach the frontend.
+  $ python manage.py run_telegraph
+
+- Create you template, including *Telegraphy template-tags*
+
+.. code-block:: HTML
+
+    {% load telegraphy_tags %}
+    {% load static %}
+    <html>
+        <head>
+            <title>Simple Telegraphy API Example</title>
+            <script src='{% static "telegraphy_demo/js/jquery-1.10.2.js" %}'></script>
+            {% telegraphy_scripts %}
+        </head>
+        <body>
+            <h1>Catching model events!</h1>
+            <ul id="event_catcher"> </ul>
+            <script>
+                (function (){
+                    var $event_catcher = $('#event_catcher');
+                    Telegraphy.register('telegraphy_demo.MyModel',
+                        function (tEvent){
+                            console.log("Event", tEvent);
+                            var new_line = $('<li/>').text("New instance");
+                            $event_catcher.append(new_line);
+                        });
+                })();
+            </script>
+        </body>
+    </html>
