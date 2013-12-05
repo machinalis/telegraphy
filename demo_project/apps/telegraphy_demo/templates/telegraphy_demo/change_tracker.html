@@ -5,16 +5,65 @@
         <title>Simple Telegraphy API Example</title>
         <script src='{% static "telegraphy_demo/js/jquery-1.10.2.js" %}'></script>
         {% telegraphy_scripts %}
+        <style>
+
+            #event_catcher {
+                height: 30%;
+                overflow-y: scroll;
+                border: 1px solid #ccc;
+            }
+            #event_log {
+                height: 30%;
+                overflow-y: scroll;
+                border: 1px solid #ccc;
+            }
+        </style>
     </head>
     <body>
         <h1>Catching model changes!</h1>
+        <p>
+            Create some models in the <a href="{% url "admin:index" %}"
+            target="_blank">admin</a> and watch the event flow to this page.
+        </p>
+        <h2>Model updates will appear here</h2>
         <ul id="event_catcher">
-
+        </ul>
+        <h3>And will be logged here</h3>
+        <ul id="event_log">
         </ul>
         <script>
             (function (){
                 // Protect global namepsace pollution
                 var $event_catcher = $('#event_catcher');
+                var $event_log = $('#event_log');
+                function generateIDForeEvent (event) {
+                    // Replace dots for slashes
+                    var newId = event.name+'_'+event.data.pk;
+                    return newId.replace(/\./g, '_');
+                }
+
+                function createNodeFromEvent (createEvent) {
+                    var new_line = $('<li/>').text(createEvent.meta.verbose_name);
+                    new_line.append(makeListFromObject(createEvent.data));
+                    new_line.attr('id', generateIDForeEvent(createEvent));
+                    $event_catcher.append(new_line);
+                }
+
+                function updateNodeFromEvent (updateEvent) {
+                    var element = $('#'+generateIDForeEvent(updateEvent));
+
+                    // Does not exist, then create it
+                    if (element.length == 0) {
+                        return createNodeFromEvent(updateEvent);
+                    }
+
+                    for (var name in updateEvent.data) {
+                        var css_selector = '.' + name;
+                        var new_value = updateEvent.data[name];
+                        element.find(css_selector).text(new_value);
+                    }
+                }
+
                 function makeListFromObject(anObject) {
                     var ul = $('<ul/>');
                     for (var name in anObject) {
@@ -26,27 +75,25 @@
                     return ul;
                 }
 
-                function applyChangesToElement(element, anObject) {
-                    for (var name in anObject) {
-                        element.find('.'+name).text(anObject[name]);
-                    }
+                function applyChangesToNode(element, anUpdates) {
+
                 }
 
-                Telegraphy.register(
-                    'telegraphy_demo.MyModel' , function (tEvent){
-                        var id = tEvent.name.replace('.', '_')+'_'+tEvent.data.pk;
 
-                        switch (tEvent.meta.event_type) {
+
+                Telegraphy.register(
+                    'telegraphy_demo.MyModel' , function (tele_event){
+                        var id = generateIDForeEvent(tele_event);
+                        var css_selector_for_node = $('#'+id);
+
+                        switch (tele_event.meta.event_type) {
                             case 'create':
                                 console.log("Create");
-                                var new_line = $('<li/>').text(tEvent.meta.verbose_name);
-                                new_line.append(makeListFromObject(tEvent.data));
-                                new_line.attr('id', id);
-                                $event_catcher.append(new_line);
+                                createNodeFromEvent(tele_event);
                                 break;
                             case 'update':
                                 console.log("Update");
-                                applyChangesToElement($('#'+id), tEvent.data);
+                                updateNodeFromEvent(tele_event);
                                 break;
                             case 'delete':
                                 $('#'+id).remove();
@@ -55,6 +102,21 @@
 
                     }
                 );
+
+
+                function logEvent (eventData) {
+                    var node = $('<li/>');
+                    node.text(eventData.name);
+                    var p = $('<p/>');
+                    p.text(window.JSON.stringify(eventData));
+                    node.append(p);
+                    $event_log.append(node);
+
+                }
+
+                Telegraphy.register('telegraphy_demo.MyModel', logEvent);
+
+
 
             })();
         </script>
