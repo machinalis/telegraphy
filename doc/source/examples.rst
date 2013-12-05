@@ -1,7 +1,7 @@
 Examples
 =========
 
-- Create an `events.py` file in your app's directory (next to the `events.py` and `urls.py`).
+- Create an ``events.py`` file in your app's directory (next to the ``models.py` and ``urls.py``).
 - For every model you want to generate events, create a sub-class of `BaseEventModel`::
 
     from models import MyModel
