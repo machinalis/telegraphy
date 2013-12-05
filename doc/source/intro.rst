@@ -19,115 +19,73 @@ Therefore, our main objectives are to provide:
     - which rely on open standards and protocols,
     - to emmit and handle asynchronous, server-side events in real-time.
 
+************
+Architecture
+************
 
-Components
-**********
+Overview
+--------
 
 The Telegraphy project's architecture has three main components:
- * A web-application that registers and emits events. The current project includes a very powerful `Django app`_.
- * A Gateway_ is a scalable, high-performance, asynchronous, networking engine.
+ * A web-application that registers and emits events.
+ * A gateway_ is a scalable, high-performance, asynchronous, networking engine.
  * A `client api`_ which talks `WAMP <http://wamp.ws//>`_ (through a WebSocket) with a *Gateway*.
-   This is normally a JavaScript loaded from a web-page. An API is provided, based on `AutobahnJS <http://autobahn.ws/js>`_.
+   This is normally a JavaScript loaded from a web-page.
 
 .. image:: _static/architecture-protocol-stack.png
+
+One of the objectives of the project is to keep these main components decoupled. For each one of them there are several available technologies
+(and more will appear). For example:
+ * The web-app can be anything from a full-scale desktop or web application to a simple script.
+ * The gateway can be implemented using `Twisted <http://twistedmatrix.com/>`_, `Tornado <http://www.tornadoweb.org/en/stable/>`_,
+   `Node <http://nodejs.org/>`_, ...
+ * The web-app and the gateway can communicate through an XML-RPC lib, or using message queues such as
+   `ØMQ <http://zeromq.org/>`_, `RabbitMQ <http://www.rabbitmq.com/>`_, ...
+ * The client can be anything implementing *WAMP* over WebSockets, typically a Javascript program.
+
+The current implementation is based on `Django <https://www.djangoproject.com>`_ for the web-app and client side components.
+The gateway is implemented using `Twisted <http://twistedmatrix.com/>`_.
+
+:doc:`Django app <django-telegraphy>`
+    A very useful app is provided. It features a class-based mechanism to extend the application's models
+    with the capability to generate server-side events.
+
+    Also, template tags and a Javascript API (based on `AutobahnJS <http://autobahn.ws/js>`_) are provided.
+    These make it really easy to handle the events on the client side.
+
+Gateway_
+    Currently, a Twisted-based server using `AutobahnPython <http://autobahn.ws/python/>`_).
+
+The web-app and gateway communicate through `XML-RPC <https://twistedmatrix.com/documents/12.2.0/web/howto/xmlrpc.html>`_
+with a shared-configuration approach.
+
 
 .. _gateway:
 
 Gateway
-********
+-------
 
 Provides an asynchronous-events management server, or **Gateway**.
 
-The gateway has the responsability to assure continuous service. Changes in configuration or events definitions must be transparent for the client (if possible). Otehrwise, specific resources muts be design in order to be able to implement client-side mechanisms to remain "connected" (reconnect, etc).
+The gateway has the responsability to assure continuous service. Changes in configuration or events definitions must be
+transparent for the client (if possible). Otherwise, specific resources must be design in order to be able to
+implement client-side mechanisms to remain "connected" (reconnect, etc).
 
-Client representatives identification: on connection, the Gateway provides a unique identifier (token). The representatives saves the token in a cookie. The cookie has an expiration time defined by the Gateway.
+Client representatives identification: on connection, the Gateway provides a unique identifier (token).
+The representatives saves the token in a cookie. The cookie has an expiration time defined by the Gateway.
 
-Persitent subscriptions: a client may decide that a given subscription to an event is 'permanent'. The subscription mechanism provided by the protocol must include some parameter to indicate this situation.
-
-
-    - Real Time Events
-        - Authentication
-        - Subscription handling
-            - Public vs Authnticated Events
-            - Subscription management (client or event based)
-        - Persistant Subscriptions
-        - Event management
-            - Class based event definition
-            - Event query language
-                - Performance
-                - Simplified client side subscription handling
-                - Easy channel emulation
-
-.. _Django app:
-
-django-telegraphy
-*****************
-
-Telegraphy aims to facilitate the integration of real-time features into a Django project.
-
-Django is not yet prepared for handling real time web features. There are a lot of issues and technologies
-that must be taken into account that are not trivial to integrate with Django: like WebSockets, asynchronous servers,
-message queues, advanced key-value stores, etc.
-
-Telegraphy takes care of all that. It provides a simple, class-based, way to provide your models with the capability to
-generate events. These will reach you client application, in near-real-time.
-
-Also provided is a set of template tags and a very simple JS API to make real-time Django apps a reality.
+Persistent subscriptions: a client may decide that a given subscription to an event is 'permanent'.
+The subscription mechanism provided by the protocol must include some parameter to indicate this situation.
 
 
-    - Management command for server (run with minimal settings)
-    - Automatic model based CUD events (Create, Update, Delete)
-    - Custom Event definitions
-    - Template tags for easy configuration
-
-This module allows to define events by inheriting from a base telegraphy. Event class.
-Different specialized type of events are provided: guaranteed delivery, with TTL, etc.
-
-Includes the following features:
-
-    - Simple management management command to run an asynchronous-events server.
-    - Generic model signal based *create*, *update*, *delete* events.
-    - Custom events definitions.
-    - Template tags and a JavaScript API for easy events management on the frontend.
-
-
-
-.. _client api:
-
-JavaScript API
-****************
-Luego desde el JS uno puede 'suscribirse' y/o consultar los tipos de eventos disponibles.
-Desde el cliente, se pide suscribir a 'pepitos' y el Gateway sabrá si el evento 'pepito' exite o no.
-
-The JS API provides a Gateway 'representative' which is responsible of:
- * connect to a running instance of a Gateway
- * subscribe to events. Free events? can we subscribe to unregistered Gateway events?
- * provide means to handle connection changes (keep the connection alive?)
- * Implelements the custom, websockets-based protocol
- *
-
-
-Django app
-************
-El emisor define
-
-
-Django authentication
-***********************
-
-Authentication shortcomings
-===========================
-
-Django uses a **HTTP Only** cookie called *sessionid*. This cookie would not be exposed to JavaScript for
-security issues. Since Gateway process may not run in the same context (port, ip, machine) where Django is running, we can't
-rely on it for authentication.
-
-In order to authenticate clients we must pre share a secret *ws auth token*.
-This token is created by the gateway whenever a page that uses telegraphy template tag is rendered.
-These tokens are short lived, they expire once the websocket connection has been established.
-
-If the client reconnects it must send a CONNECT command
-
-
-
-
+- Real Time Events
+    - Authentication
+    - Subscription handling
+        - Public vs Authnticated Events
+        - Subscription management (client or event based)
+    - Event management
+        - Class based event definition
+        - Event query language
+            - Performance
+            - Simplified client side subscription handling
+            - Easy channel emulation

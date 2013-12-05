@@ -1,9 +1,6 @@
 Installation instructions
 =========================
 
-:synopsis: Installing telegraphy
-
-
 Get It
 ------
 
@@ -68,8 +65,8 @@ Installing the Django app
 
 Telegraphy's Django app is bundled within the ``contrib`` directory in the Telegraphy root.
 
-It is installed with the standard procedure:  in your projects `settings.py` file
-add `telegraphy.contrib.django_telegraphy` to the `INSTALLED_APPS`::
+It is installed with the standard procedure:  in your project's `settings.py` file
+add ``telegraphy.contrib.django_telegraphy`` to the ``INSTALLED_APPS``::
 
  INSTALLED_APPS = (
      ...

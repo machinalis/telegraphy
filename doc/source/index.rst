@@ -6,6 +6,8 @@
 Welcome to Telegraphy's documentation!
 ======================================
 
+*Project home:* `https://github.com/machinalis/telegraphy/ <https://github.com/machinalis/telegraphy/>`_
+
 Telegraphy provides real time events for WSGI Python applications with additional
 features such as event filtering, subscription persistence and authorization/authentication.
 
