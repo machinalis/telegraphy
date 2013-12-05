@@ -5,7 +5,9 @@ from django import template
 from django.core.exceptions import ImproperlyConfigured
 from socket import error as SocketError
 import errno
+
 from telegraphy.contrib.django_telegraphy import settings
+from telegraphy.contrib.django_telegraphy import events
 from telegraphy.gateway.base import GatewayProxy
 from telegraphy.utils import (build_url_from_settings,
                               extract_host_from_request,
@@ -44,14 +46,16 @@ def telegraphy_scripts(context):
 
     registered_model_events = json.dumps([])
 
+    key, secret = events.get_CRA_key_and_secret()
+
     context =  {
         'TELEGRAPHY_EVENT_PREFIX': settings.TELEGRAPHY_EVENT_PREFIX,
         'TELEGRAPHY_RPC_URI': settings.TELEGRAPHY_RPC_URI,
         'TELEGRAPHY_WS_URL': telegraphy_ws_url(context),
         'AUTOBAHN_URL': settings.AUTOBAHN_URL,
         'registered_model_events': registered_model_events,
-        'CRA_KEY': None,
-        'CRA_SECRET': None,
+        'CRA_KEY': key,
+        'CRA_SECRET': secret,
     }
 
     return render_to_string('django_telegraphy/telegraphy_scripts.html',context)
