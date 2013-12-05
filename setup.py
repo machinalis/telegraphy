@@ -10,7 +10,7 @@ packages = [p for p in find_packages() if not 'demo_project' in p]
 
 setup(
     name='telegraphy',
-    version='0.1.1.4',
+    version='0.1.2',
     description=('Telegraphy - Real Time Events For Django.'),
     long_description=open('README.rst').read(),
     changelog='',
