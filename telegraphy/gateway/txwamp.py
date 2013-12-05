@@ -1,15 +1,11 @@
-
-from telegraphy.gateway import Gateway
-from telegraphy.utils import build_url_from_settings
-from twisted.internet import reactor  # , defer
-
 from autobahn.websocket import listenWS
-from autobahn.wamp import exportRpc, \
-    WampServerFactory, \
-    WampServerProtocol
+from autobahn.wamp import exportRpc, WampServerFactory, WampServerProtocol
+from twisted.internet import reactor
 from twisted.web import xmlrpc, server
 from urlparse import urlparse
-from telegraphy.utils import show_traceback
+
+from telegraphy.gateway import Gateway
+from telegraphy.utils import show_traceback, build_url_from_settings
 
 
 class TelegraphyConnection(WampServerProtocol):
@@ -22,8 +18,6 @@ class TelegraphyConnection(WampServerProtocol):
     @show_traceback
     def onSessionOpen(self):
         # .. and register them for RPC. that's it.
-        print "On Session Open"
-
         self.registerForRpc(self, self.gateway.rpc_uri)
         self.registerForPubSub(self.gateway.event_prefix, prefixMatch=True)
 
@@ -36,7 +30,6 @@ class TelegraphyConnection(WampServerProtocol):
 
     @exportRpc("authenticate")
     def authenticate(self, auth_token, session_id):
-        print "Authentication request", auth_token, session_id
         if self.gateway.verify_auth_token(auth_token):
             return "OK"
         # TODO: Return error
@@ -44,7 +37,6 @@ class TelegraphyConnection(WampServerProtocol):
     @exportRpc('publish')
     def clientPublish(self, uri, args, extra=None):
         """RPC method. Publish event from client"""
-        print uri, args, extra
         self.factory.dispatch(self.gateway.event_prefix + uri, args)
 
 
@@ -62,8 +54,7 @@ class GatewayWampServerFactory(WampServerFactory):
         return protocol
 
     def onClientSubscribed(self, proto, topicUri):
-        print "Client", proto, "subscribed to", topicUri
-
+        pass
 
     def removeConnection(self, proto):
         self.connected_clients.remove(proto)
@@ -86,7 +77,6 @@ class WebAppXMLRPCInterface(xmlrpc.XMLRPC):
     def xmlrpc_send_event(self, event):
         """Method called from the web app side to publish an event to clients"""
         return self.gateway.send(event)
-
 
 
 class TxWAMPGateway(Gateway):
@@ -126,7 +116,6 @@ class TxWAMPGateway(Gateway):
                                                 debugWamp=self.debug,
                                                 gateway=self
                                                 )
-        print self.factory
         self.factory.protocol = TelegraphyConnection
         self.factory.setProtocolOptions(allowHixie76=True)
         listenWS(self.factory)
@@ -140,5 +129,4 @@ class TxWAMPGateway(Gateway):
 
     def send(self, event):
         topicUri = self.event_prefix + event['name']
-        print "Dispatching ", topicUri, event
         self.factory.dispatch(topicUri, event)
