@@ -50,6 +50,8 @@ def telegraphy_scripts(context):
         'TELEGRAPHY_WS_URL': telegraphy_ws_url(context),
         'AUTOBAHN_URL': settings.AUTOBAHN_URL,
         'registered_model_events': registered_model_events,
+        'CRA_KEY': None,
+        'CRA_SECRET': None,
     }
 
     return render_to_string('django_telegraphy/telegraphy_scripts.html',context)
