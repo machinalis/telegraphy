@@ -11,3 +11,5 @@ build/*
 dist/*
 *.egg*
 demo_project/demo_db.sqlite3
+*.db
+*.sqlite*
