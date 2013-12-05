@@ -4,6 +4,7 @@ import datetime
 import importlib
 import inspect
 import xmlrpclib
+from collections import namedtuple
 
 from telegraphy.contrib.django_telegraphy import settings
 from django.db.models.signals import post_save, post_delete
@@ -11,11 +12,20 @@ from django.db.models.signals import post_save, post_delete
 
 ISO8601_TIME_FORMAT = "%Y-%m-%dT%H:%M:%S.%fZ"
 
+
+def get_gateway_proxy():
+    """
+    Get an object that allows to interact with the current gateway.
+
+    """
+    # TODO: eventually, we need a GatewayProxy class to abstract this interface.
+    gateway_proxy_url = settings.TELEGRAPHY_RPC_PARAMS['url']
+    return xmlrpclib.Server(gateway_proxy_url, allow_none=True)
+
+
 # This list keeps a possibly out-of-data registry of registered events.
 # TODO: a method to update the list through the Gateway
 _events = []
-
-
 def get_registered_events():
     """Return the list of currently registered events."""
     # TODO: add an optional parameter to update the list before returning.
@@ -42,10 +52,7 @@ class BaseEventModel(object):
     def __init__(self):
         self.name = self.name or self.get_default_name()
         self.verbose_name = self.verbose_name or self.get_default_verbose_name()
-
-        gateway_proxy_url = settings.TELEGRAPHY_RPC_PARAMS['url']
-        self.gateway_proxy = xmlrpclib.Server(gateway_proxy_url,
-                                              allow_none=True)
+        self.gateway_proxy = get_gateway_proxy()
 
     def get_default_name(self):
         """
@@ -167,3 +174,24 @@ def autodiscover():
             for cname, EventClass in event_classes:
                 event = EventClass()
                 event.register()
+
+
+def get_CRA_key_and_secret(user):
+    """
+    Return the WAMP Challenge Response Authentication's key and secret, for the
+    given user.
+
+    """
+    user_auth_events = []
+    for event in get_registered_events():
+        auth = event.is_authorized_user(user)
+        if auth:
+            user_auth_events.append(event.name)
+
+    gateway_proxy = get_gateway_proxy()
+    CRATokens = namedtuple('CRATokens', ('key', 'secret'))
+    return CRATokens._make(
+        gateway_proxy.get_key_secret({
+            user.pk: {'events': user_auth_events}
+        })
+    )
