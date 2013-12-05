@@ -10,10 +10,10 @@ packages = [p for p in find_packages() if not 'demo_project' in p]
 
 setup(
     name='telegraphy',
-    version='0.1',
-    description=('Telegraphy - Real Time Events For Django with auth, '
-                 'filtering and subscription persitance.'),
+    version='0.1.1.4',
+    description=('Telegraphy - Real Time Events For Django.'),
     long_description=open('README.rst').read(),
+    changelog='',
     license='Apache License 2.0',
     author='Nahuel Defossé',
     author_email='nahuel.defosse@gmail.com',
@@ -25,8 +25,9 @@ setup(
     # http://pypi.python.org/pypi?%3Aaction=list_classifiers
     #
     classifiers = ["License :: OSI Approved :: Apache Software License",
-                   "Development Status :: 5 - Production/Stable",
+                   "Development Status :: 3 - Alpha",
                    "Environment :: Console",
+                   "Framework :: Django",
                    "Framework :: Twisted",
                    "Intended Audience :: Developers",
                    "Operating System :: OS Independent",

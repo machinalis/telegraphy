@@ -1,6 +1,5 @@
-===================
 Telegraphy
-===================
+==========
 
 Telegraphy provides real time events for WSGI Python applications with additional
 features such as event filtering, subscription persistence and authorization/authentication.
@@ -34,7 +33,7 @@ If you want to install it from source, grab the git repository from GitHub and r
 
 
 Installing the Django app
-=============
+=========================
 
 Telegraphy's Django app is installed with the standard procedure:  in your projects `settings.py` file
 add `telegraphy.contrib.django_telegraphy` to the `INSTALLED_APPS`::
@@ -68,6 +67,7 @@ Extend your models so that they automatically generate events: create an ``event
     class MyEventsModel(BaseEventModel):
         model = MyModel
 
+
 And that's it! Every time you create, update or delete an instance of your model, an event will reach the frontend.
 
 You can find more `examples in the documentation <http://telegraphy.readthedocs.org/en/latest/>`_.
@@ -79,10 +79,11 @@ More detailed documentation
 You can read the docs online `here <http://telegraphy.readthedocs.org/en/latest/>`_.
 Or for offline access, you can clone the project code repository and read them from the ``docs`` folder.
 
+
 Help and discussion
 ===================
 
-Join us at the telegraphy `google group <http://groups.google.com/group/telegraphy>`_.
+If you finde any bugs or suggestions please use Github Issue Tracker
 
 
 Authors
