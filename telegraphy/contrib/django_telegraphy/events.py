@@ -6,7 +6,6 @@ import inspect
 import xmlrpclib
 
 from telegraphy.contrib.django_telegraphy import settings
-from django.core import serializers
 from django.db.models.signals import post_save, post_delete
 
 
@@ -166,6 +165,5 @@ def autodiscover():
                 pass
             event_classes = inspect.getmembers(events_module, is_event_model)
             for cname, EventClass in event_classes:
-                print "Event classes detected in app %s: %s" % (app, cname)
                 event = EventClass()
                 event.register()
