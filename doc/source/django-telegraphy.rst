@@ -153,15 +153,12 @@ TBD.
 
 JavaScript API
 ----------------
-Luego desde el JS uno puede 'suscribirse' y/o consultar los tipos de eventos disponibles.
-Desde el cliente, se pide suscribir a 'pepitos' y el Gateway sabrá si el evento 'pepito' exite o no.
 
-The JS API provides a Gateway 'representative' which is responsible of:
+TBC. The `AutobahnJS-based <http://autobahn.ws/js>`__ API provides a Gateway *representative* which is responsible of:
  * connect to a running instance of a Gateway
  * subscribe to events. Free events? can we subscribe to unregistered Gateway events?
  * provide means to handle connection changes (keep the connection alive?)
- * Implelements the custom, websockets-based protocol
- *
+
 
 
 Authentication shortcomings
@@ -171,11 +168,17 @@ Django uses a **HTTP Only** cookie called *sessionid*. This cookie would not be 
 security issues. Since Gateway process may not run in the same context (port, ip, machine) where Django is running, we can't
 rely on it for authentication.
 
-In order to authenticate clients we must pre share a secret *ws auth token*.
-This token is created by the gateway whenever a page that uses telegraphy template tag is rendered.
-These tokens are short lived, they expire once the websocket connection has been established.
+In order to authenticate clients we must pre share (key, secret) tokens, as part of the
+`WAMP Challenge-Response-Authentication`__ mechanism. This tokens are created by the gateway
+whenever a page that uses telegraphy's template tag is rendered. These tokens are short lived,
+they expire once the websocket connection has been established.
 
-If the client reconnects it must send a CONNECT command
+.. _wampcra: https://github.com/tavendo/AutobahnPython/tree/master/examples/wamp/authentication
+
+__ wampcra_
 
 
+
+
+TBC.
 
