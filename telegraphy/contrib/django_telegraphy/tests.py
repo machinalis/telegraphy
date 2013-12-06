@@ -4,7 +4,8 @@ from mock import patch, MagicMock
 from django.utils.unittest import TestCase
 
 from events import (BaseEventModel, post_save, post_delete,
-                    get_registered_events, ISO8601_TIME_FORMAT)
+                    get_registered_events, ISO8601_TIME_FORMAT,
+                    get_CRA_key_and_secret)
 
 
 class BaseModelEventBaseTestClass(TestCase):
@@ -150,3 +151,24 @@ class BaseModelEventRegisterTests(BaseModelEventBaseTestClass):
         self.event.operations = (BaseEventModel.OP_CREATE, )
         self.event.register()
         self.assertItemsEqual(get_registered_events(), [self.event])
+
+
+class GetCRAKeyAndSecretTests(TestCase):
+
+    def setUp(self):
+        patcher = patch(
+            'telegraphy.contrib.django_telegraphy.events.get_registered_events')
+        self.mock_get_events = patcher.start()
+        patcher = patch(
+            'telegraphy.contrib.django_telegraphy.events.get_gateway_proxy')
+        self.mock_get_gateway = patcher.start()
+        self.proxy = MagicMock()
+        self.proxy.get_key_secret.return_value = ('key', 'secret')
+        self.mock_get_gateway.return_value = self.proxy
+        self.addCleanup(patcher.stop)
+        self.user = MagicMock()
+
+    def test_is_authorized_user_called_for_each_registered_event(self):
+        event = MagicMock()
+        self.mock_get_events.return_value = [event]
+        get_CRA_key_and_secret(self.user)
