@@ -17,7 +17,7 @@ Examples
 
 - Create you template, including *Telegraphy template-tags*
 
-.. code-block:: HTML
+.. code-block:: html+django
 
     {% load telegraphy_tags %}
     {% load static %}

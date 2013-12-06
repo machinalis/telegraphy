@@ -1,7 +1,7 @@
 WAMP Authentication and Extended Session
 ########################################
 
-.. A gateway is published in a URL. Many gateway instances can coexist.
+A gateway is published in a URL. Many gateway instances can coexist.
 Telgraphy uses WAMP RPC/PubSub capabilities adding some authentication mechanism.
 
 

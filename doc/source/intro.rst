@@ -36,12 +36,13 @@ The Telegraphy project's architecture has three main components:
 
 One of the objectives of the project is to keep these main components decoupled. For each one of them there are several available technologies
 (and more will appear). For example:
- * The web-app can be anything from a full-scale desktop or web application to a simple script.
- * The gateway can be implemented using `Twisted <http://twistedmatrix.com/>`_, `Tornado <http://www.tornadoweb.org/en/stable/>`_,
+
+* The web-app can be anything from a full-scale desktop or web application to a simple script.
+* The gateway can be implemented using `Twisted <http://twistedmatrix.com/>`_, `Tornado <http://www.tornadoweb.org/en/stable/>`_,
    `Node <http://nodejs.org/>`_, ...
- * The web-app and the gateway can communicate through an XML-RPC lib, or using message queues such as
-   `ØMQ <http://zeromq.org/>`_, `RabbitMQ <http://www.rabbitmq.com/>`_, ...
- * The client can be anything implementing *WAMP* over WebSockets, typically a Javascript program.
+* The web-app and the gateway can communicate through an XML-RPC lib, or using message queues such as
+  `ØMQ <http://zeromq.org/>`_, `RabbitMQ <http://www.rabbitmq.com/>`_, ...
+* The client can be anything implementing *WAMP* over WebSockets, typically a Javascript program.
 
 The current implementation is based on `Django <https://www.djangoproject.com>`_ for the web-app and client side components.
 The gateway is implemented using `Twisted <http://twistedmatrix.com/>`_.
