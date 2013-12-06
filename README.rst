@@ -83,7 +83,7 @@ Or for offline access, you can clone the project code repository and read them f
 Help and discussion
 ===================
 
-If you finde any bugs or suggestions please use Github Issue Tracker
+If you finde any bugs or suggestions please use `Github Issue Tracker <https://github.com/machinalis/telegraphy/issues>`_
 
 
 Authors
