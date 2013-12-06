@@ -81,6 +81,13 @@ class BaseEventModel(object):
                 "Feature not supported yet. model must be a class")
         return self.model
 
+    def is_authorized_user(self, user):
+        """
+        Return True if the given user is authorized register to these events.
+
+        """
+        return True  # Public event.
+
     def on_model_create(self, sender, instance, created, raw, **kwargs):
         if created and not raw:
             self.send_to_gateway(instance, self.OP_CREATE)
@@ -192,6 +199,6 @@ def get_CRA_key_and_secret(user):
     CRATokens = namedtuple('CRATokens', ('key', 'secret'))
     return CRATokens._make(
         gateway_proxy.get_key_secret({
-            user.pk: {'events': user_auth_events}
+            str(user.pk): {'events': user_auth_events},
         })
     )

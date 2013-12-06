@@ -70,9 +70,10 @@ class WebAppXMLRPCInterface(xmlrpc.XMLRPC):
 
     # All exposed methods must start with xmlrpc
 
-    def xmlrpc_get_auth_token(self):
+    def xmlrpc_get_key_secret(self, user_auth):
         """Generate auth token"""
-        return self.gateway.get_auth_token()
+        print user_auth
+        return None, None
 
     def xmlrpc_send_event(self, event):
         """Method called from the web app side to publish an event to clients"""
