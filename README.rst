@@ -70,7 +70,7 @@ Extend your models so that they automatically generate events: create an ``event
 
 And that's it! Every time you create, update or delete an instance of your model, an event will reach the frontend.
 
-You can find more `examples in the documentation <http://telegraphy.readthedocs.org/en/latest/>`_.
+You can find more `examples in the documentation <http://telegraphy.readthedocs.org/en/latest/>`__.
 
 
 More detailed documentation
@@ -83,7 +83,10 @@ Or for offline access, you can clone the project code repository and read them f
 Help and discussion
 ===================
 
-If you finde any bugs or suggestions please use Github Issue Tracker
+For help, suggestions and discussions please refer to http://groups.google.com/group/telegraphy
+
+To guide the development efforts, or if you find any bugs, please use
+`GitHub's issue tracker <https://github.com/machinalis/telegraphy/issues>`__.
 
 
 Authors
