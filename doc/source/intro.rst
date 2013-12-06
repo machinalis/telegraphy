@@ -29,7 +29,7 @@ Overview
 The Telegraphy project's architecture has three main components:
  * A **web-application** that registers and emits events.
  * A **gateway** is a scalable, high-performance, asynchronous, networking engine.
- * A **client** api which talks `WAMP <http://wamp.ws//>`_ (through a WebSocket) with a *Gateway*.
+ * A **client** api which talks `WAMP <http://wamp.ws/>`__ (through a WebSocket) with a *Gateway*.
    This is normally a JavaScript loaded from a web-page.
 
 .. image:: _static/architecture-protocol-stack.png
@@ -50,7 +50,7 @@ The gateway is implemented using `Twisted <http://twistedmatrix.com/>`_.
     A very useful app is provided. It features a class-based mechanism to extend the application's models
     with the capability to generate server-side events.
 
-    Also, template tags and a Javascript API (based on `AutobahnJS <http://autobahn.ws/js>`_) are provided.
+    Also, template tags and a Javascript API (based on `AutobahnJS <http://autobahn.ws/js>`__) are provided.
     These make it really easy to handle the events on the client side.
 
 :doc:`Gateway <gateway>`
