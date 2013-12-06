@@ -42,23 +42,22 @@ def auth_token(context):
 
 @register.simple_tag(takes_context=True)
 def telegraphy_scripts(context):
-    """Creates telegrphy javascript inclusions and settings"""
+    """Creates telegraphy javascript inclusions and settings"""
 
     registered_model_events = json.dumps([])
+    cra_tokens = events.get_CRA_key_and_secret(context['request'].user)
 
-    key, secret = events.get_CRA_key_and_secret()
-
-    context =  {
+    context = {
         'TELEGRAPHY_EVENT_PREFIX': settings.TELEGRAPHY_EVENT_PREFIX,
         'TELEGRAPHY_RPC_URI': settings.TELEGRAPHY_RPC_URI,
         'TELEGRAPHY_WS_URL': telegraphy_ws_url(context),
         'AUTOBAHN_URL': settings.AUTOBAHN_URL,
         'registered_model_events': registered_model_events,
-        'CRA_KEY': key,
-        'CRA_SECRET': secret,
+        'CRA_KEY': cra_tokens.key or 'null',
+        'CRA_SECRET': cra_tokens.secret or 'null',
     }
 
-    return render_to_string('django_telegraphy/telegraphy_scripts.html',context)
+    return render_to_string('django_telegraphy/telegraphy_scripts.html', context)
 
 
 @register.simple_tag(takes_context=True)
