@@ -19,7 +19,7 @@ The subscription mechanism provided by the protocol must include some parameter 
 - Real Time Events
     - Authentication
     - Subscription handling
-        - Public vs Authnticated Events
+        - Public vs Authenticated Events
         - Subscription management (client or event based)
     - Event management
         - Class based event definition
