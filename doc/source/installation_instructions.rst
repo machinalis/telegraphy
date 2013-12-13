@@ -60,6 +60,25 @@ packaged release. It may contain bugs and backwards-incompatible changes but mos
 likely also new goodies to play with.
 
 
+System dependencies
+^^^^^^^^^^^^^^^^^^^^^^
+
+One of our main dependencies, *Twisted*, requires gcc which is not available by default.
+
+In Ubuntu-like systems you'll need to install ``python-dev``::
+
+    $ sudo apt-get install python-dev
+
+To build the documentation, you'll need to have Sphinx installed::
+
+    $ pip install Sphinx
+
+To help in the documentation elaboration, we have a small script that detects changes while you are working
+and automatically builds the doc: ``./autobuild-docs.sh`` . If you want to use it, you'll need *inotify*::
+
+    $ sudo apt-get install inotify-tools
+
+
 Installing the Django app
 -------------------------
 
@@ -68,9 +87,17 @@ Telegraphy's Django app is bundled within the ``contrib`` directory in the Teleg
 It is installed with the standard procedure:  in your project's `settings.py` file
 add ``telegraphy.contrib.django_telegraphy`` to the ``INSTALLED_APPS``::
 
- INSTALLED_APPS = (
-     ...
-     'telegraphy.contrib.django_telegraphy',
+     INSTALLED_APPS = (
+         ...
+         'telegraphy.contrib.django_telegraphy',
+         ...
+     )
+
+
+The `default TEMPLATE_CONTEXT_PROCESSORS <https://docs.djangoproject.com/en/dev/ref/settings/#template-context-processors>`__
+do not include the request as a variable in the context so, if you haven't done so yet, add ``django.core.context_processors.request``::
+
+ TEMPLATE_CONTEXT_PROCESSORS = (
+     'django.core.context_processors.request',
      ...
  )
-
