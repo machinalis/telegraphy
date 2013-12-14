@@ -5,10 +5,21 @@ Gateway
 
 WORK IN PROGRESS!!!
 
+Interface with the client
+----------------------------
+
 The general idea behind the **gateway** is to provide an asynchronous-events management server.
 
 Its interface with the client applications is based on the `WAMP protocol`_. The current
 version relies on AutobahnPython_, which provides a fully asynchronous Twisted-based implementation.
+
+.. _AutobahnPython: http://autobahn.ws/python/
+
+.. _WAMP Protocol: http://wamp.ws/
+
+
+Interface with the web-app
+----------------------------
 
 On the other side, the interface with the web-app is not yet fully defined. Currently, the *gateway*
 receives event's data through XML-RPC, which is very general and flexible, but not highly performant.
@@ -25,18 +36,16 @@ Such architecture would allow the web-app to be independent of the communication
 Many implementations can be maintained and used as needed (XML-RPC, message-queue, etc.).
 
 
-
-As such
-
-
-.. _AutobahnPython: http://autobahn.ws/python/
-
-.. _WAMP Protocol: http://wamp.ws/
-
-Notes
--------
+Features (Notes)
+------------------
 
 Provides an asynchronous-events management server.
+
+Web-app agnostic: even when the current implementation uses Django,
+the design of the gateway shall be completely independent of the web-app technology.
+Ideally, the interfaces should be open, standard and well defined so that any program
+should be able to interact with the gateway (even non-Python programs!).
+
 
 The gateway has the responsability to assure continuous service. Changes in configuration or events definitions must be
 transparent for the client (if possible). Otherwise, specific resources must be design in order to be able to
