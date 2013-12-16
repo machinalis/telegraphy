@@ -1,9 +1,9 @@
 """Collection of utility functions not tight to any other module"""
-import sys
 import re
 from importlib import import_module
-from traceback import format_exc
-from functools import wraps
+
+__all__ = ['build_url_from_settings', 'check_valid_settings', 'attr_or_item',
+           'import_class', 'camelcase_to_undersocre', 'underscore_to_camelcase']
 
 
 def build_url_from_settings(settings):
@@ -24,18 +24,6 @@ def build_url_from_settings(settings):
 def check_valid_settings(settings):
     """Validate sane settings"""
     return True
-
-
-def extract_host_from_request(request):
-    """Extracts host from possible Django request"""
-    host = None
-    if not request.is_secure():
-        host = request.META['HTTP_HOST']
-    else:
-        host = request.META['HTTPS_HOST']
-    if ':' in host:
-        host = host.split(':')[0]
-    return host
 
 
 def attr_or_item(obj, name, default=None):
@@ -70,25 +58,3 @@ def underscore_to_camelcase(value, first_cap=True):
     else:
         words = map(lambda x: x.capitalize(), words)
     return ''.join(words)
-
-def get_user(context):
-    """Gets user id and username from context"""
-    user = context['request'].user
-    if user.is_authenticated():
-        user_data = (user.pk, user.username)
-    else:
-        user_data = (None, None)
-    return user_data
-
-
-def show_traceback(f):
-    """Decorator for immediate execption reporting on twisted deferreds."""
-    @wraps(f)
-    def wrapped(*args, **kwargs):
-        try:
-            return f(*args, **kwargs)
-        except Exception as e:
-            sys.stderr.write(e)
-            sys.stderr.writelines(format_exc())
-            raise e
-    return wrapped
