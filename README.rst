@@ -126,6 +126,6 @@ Authors
 * Special acknowledgements to `Machinalis <http://www.machinalis.com/>`_ for the time provided to work on this project.
 
 Machinalis also works on some other very interesting projects, like
-`SimpleAI <http://simpleai.machinalis.com/>`_,
+`SimpleAI <https://github.com/simpleai-team/simpleai/>`_,
 `Quepy <http://quepy.machinalis.com/>`_
 and `more <https://github.com/machinalis>`_.
