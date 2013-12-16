@@ -22,7 +22,7 @@ def fullsplit(path, result=None):
     return fullsplit(head, [tail] + result)
 
 
-EXCLUDE_FROM_PACKAGES = ['django.demo_project', ]
+EXCLUDE_FROM_PACKAGES = ['telegraphy.demo_project', ]
 
 
 def is_package(package_name):
@@ -61,9 +61,12 @@ for dirpath, dirnames, filenames in os.walk(telegraphy_dir):
 # Filter does not work, workarround
 packages = [p for p in find_packages() if not 'demo_project' in p]
 
+version = __import__('telegraphy').get_version()
+
+
 setup(
     name='telegraphy',
-    version='0.1.2.7',
+    version=version,
     description=('Telegraphy - Real Time Events For Django.'),
     long_description=open('README.rst').read(),
     changelog='',
