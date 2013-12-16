@@ -68,9 +68,39 @@ Extend your models so that they automatically generate events: create an ``event
         model = MyModel
 
 
-And that's it! Every time you create, update or delete an instance of your model, an event will reach the frontend.
+Finally, prepare some template to receive and show the events:
 
-You can find more `examples in the documentation <http://telegraphy.readthedocs.org/en/latest/>`__.
+.. code-block:: html+django
+
+    {% load telegraphy_tags %}
+    {% load static %}
+    <html>
+        <head>
+            <title>Simple Telegraphy API Example</title>
+            <script src='{% static "your_app/js/jquery-1.10.2.js" %}'></script>
+            {% telegraphy_scripts %}
+        </head>
+        <body>
+            <h1>Catching model events!</h1>
+            <ul id="event_catcher"> </ul>
+            <script>
+                (function (){
+                    var $event_catcher = $('#event_catcher');
+                    Telegraphy.register('your_app.MyModel',
+                        function (tEvent){
+                            console.log("Event", tEvent);
+                            var new_line = $('<li/>').text("New instance");
+                            $event_catcher.append(new_line);
+                        });
+                })();
+            </script>
+        </body>
+    </html>
+
+
+And that's it! Every time you create, update or delete an instance of your model, an event will reach your template.
+
+You can find more `examples in the documentation <http://telegraphy.readthedocs.org/en/latest/examples.html>`__.
 
 
 More detailed documentation
