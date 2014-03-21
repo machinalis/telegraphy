@@ -42,7 +42,7 @@ directory called *telegraphy*:
 
 Git::
 
- $ git clone git://github.com/machinalis/telegraphy/telegraphy.git
+ $ git clone git://github.com/machinalis/telegraphy.git
 
 You should either install the resulting project with *python setup.py install*
 or put the *telegraphy* directory in your PYTHONPATH.
