@@ -29,7 +29,7 @@ You can get *Telegraphy* by using pip::
 
 Or grab the source code from the GitHub repository and run setup.py::
 
- $ git clone git://github.com/machinalis/telegraphy/telegraphy.git
+ $ git clone git://github.com/machinalis/telegraphy.git
  $ cd telegraphy
  $ python setup.py install
 

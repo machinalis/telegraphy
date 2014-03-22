@@ -27,7 +27,7 @@ for both commands (``sudo pip install telegraphy``).
 
 If you want to install it from source, grab the git repository from GitHub and run setup.py::
 
- $ git clone git://github.com/machinalis/telegraphy/telegraphy.git
+ $ git clone git://github.com/machinalis/telegraphy.git
  $ cd telegraphy
  $ python setup.py install
 
