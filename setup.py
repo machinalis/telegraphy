@@ -17,7 +17,7 @@ setup(
     author_email='nahuel.defosse@gmail.com',
     #url='http://telegraphy.machinalis.com',
     platforms=('Any'),
-    install_requires = ['Django==1.6', 'Twisted', 'autobahn'],
+    install_requires = ['Django==1.6', 'Twisted', 'autobahn==0.6.5'],
     packages = packages,
     zip_safe = False,
     # http://pypi.python.org/pypi?%3Aaction=list_classifiers
