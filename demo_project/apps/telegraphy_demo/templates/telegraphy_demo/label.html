@@ -1,0 +1,15 @@
+{% load telegraphy_tags %}
+{% load static %}
+<html>
+    <head>
+        <title>Simple Telegraphy Label Example</title>
+        <script src='{% static "telegraphy_demo/js/jquery-1.10.2.js" %}'></script>
+        {% telegraphy_scripts %}
+        <style>
+        </style>
+    </head>
+    <body>
+        {% rt_label model=model field="title" element="h1" %}
+        {% rt_label model=model field="count" %}
+    </body>
+</html>
