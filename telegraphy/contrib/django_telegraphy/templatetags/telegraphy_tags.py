@@ -6,6 +6,7 @@ from django.core.exceptions import ImproperlyConfigured
 from socket import error as SocketError
 import errno
 from telegraphy.contrib.django_telegraphy import settings
+from telegraphy.contrib.django_telegraphy.events import get_related_event
 from telegraphy.gateway.base import GatewayProxy
 from telegraphy.utils import (build_url_from_settings,
                               extract_host_from_request,
@@ -78,3 +79,23 @@ def telegraphy_ws_url(context):
 def telegraphy_event_prefix(context):
     # TODO: Generalize
     return settings.TELEGRAPHY_EVENT_PREFIX
+
+
+@register.simple_tag(takes_context=True)
+def rt_label(context, model, field, element='div', classes='', id=None):
+    event = get_related_event(model)
+    value = getattr(model, field)
+    if id is None:
+        id = "{0}-{1}-{2}".format(event.name, model.pk, field)
+
+    context = {
+        "id": id,
+        "element": element,
+        "classes": classes,
+        "event": event,
+        "value": value,
+        "model": model,
+        "field": field
+    }
+
+    return render_to_string('django_telegraphy/label.html',context)

@@ -23,6 +23,15 @@ def get_registered_events():
     return _events
 
 
+def get_related_event(instance, default=None):
+    """Return the event instance related to passed instance"""
+    # TODO: had a dict of events indexed by model class
+    for event in get_registered_events():
+        if instance.__class__ == event.model:
+            return event
+    return default
+
+
 class BaseEventModel(object):
     """
     Base class for events-generating Models.

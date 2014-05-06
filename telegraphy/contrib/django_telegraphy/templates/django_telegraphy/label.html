@@ -1,0 +1,14 @@
+<{{element}} id="{{id}}" {%if classes%}class="{{classes}}"{% endif %}>{{value}}</{{element}}>
+<script type="text/javascript">
+  Telegraphy.register("{{event.name}}", function (event) {
+      var element = document.getElementById("{{id}}")
+      if (event.data.pk === {{model.pk}}) {
+        element.textContent = event.data.{{field}}; 
+      }
+    })
+  /*
+    TODO create a updateProperty method on Telegrapy
+    updateProperty(_event_, targetId, property)
+
+   */
+</script>
