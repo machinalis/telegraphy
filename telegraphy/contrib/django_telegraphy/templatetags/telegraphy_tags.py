@@ -1,5 +1,5 @@
 """Template tags for Django templates"""
-
+import uuid
 from django import template
 
 from django.core.exceptions import ImproperlyConfigured
@@ -86,7 +86,7 @@ def rt_label(context, model, field, element='div', classes='', id=None):
     event = get_related_event(model)
     value = getattr(model, field)
     if id is None:
-        id = "{0}-{1}-{2}".format(event.name, model.pk, field)
+        id = str(uuid.uuid4()) # Something better ?
 
     context = {
         "id": id,
@@ -99,3 +99,38 @@ def rt_label(context, model, field, element='div', classes='', id=None):
     }
 
     return render_to_string('django_telegraphy/label.html',context)
+
+@register.simple_tag(takes_context=True)
+def rt_ul(context, models, field=None, format=None, classes='', id=None):
+    #option for adding new models to the list??
+
+    event = get_related_event(models[0])  # What if models is empty?"
+    if id is None:
+        id = str(uuid.uuid4())  # Something better ?
+
+    if field and format:
+        raise ValueError("You have to provide field or format, no both")
+
+    if field:
+        format = '{{0.{0}}}'.format(field)
+
+    if format is None:
+        raise ValueError("You have to provide field or format parameter")
+
+    js_format = format.replace('{0.', '{')
+    model_dict = {}
+    for model in models:
+        model_dict[model] = format.format(model)
+
+    #Provide parameters of functions inside jsons...
+
+    context = {
+        "id": id,
+        "classes": classes,
+        "event": event,
+        "format": format,
+        "js_format": js_format,
+        "models": model_dict
+    }
+
+    return render_to_string('django_telegraphy/rt_ul.html', context)

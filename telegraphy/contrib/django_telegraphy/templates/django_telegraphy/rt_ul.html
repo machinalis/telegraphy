@@ -1,0 +1,30 @@
+<ul id="{{id}}"{% if classes %} class="{{classes}}"{% endif %}>
+{% for model, content in models.iteritems %}
+  <li id="{{id}}_{{model.pk}}">{{content}}</li>
+{% endfor %}
+</ul>
+
+<script type="text/javascript">
+  (function(Telegraphy) {
+    /**
+     * Add functions to telegrapy
+     */
+
+   function supplant(template, o) {
+       return template.replace(/{([^{}]*)}/g, function (a, b) {
+           var r = o[b];
+           return typeof r === 'string' || typeof r === 'number' ? r : a;
+        }
+     );
+   }
+    
+    Telegraphy.register("{{event.name}}", function (event) {
+      var baseId = "{{id}}",
+          element = document.getElementById(baseId + "_" + event.data.pk);
+          element.textContent = supplant("{{js_format|safe}}", event.data);
+          /*
+             TODO  Filter kinds of events
+          */
+    })
+  })(Telegraphy);
+</script>
