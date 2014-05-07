@@ -18,13 +18,11 @@
      );
    }
     
-    Telegraphy.register("{{event.name}}", function (event) {
+    Telegraphy.subscribe("{{event.name}}").onAny(function (event) {
       var baseId = "{{id}}",
           element = document.getElementById(baseId + "_" + event.data.pk);
+          console.log(event);
           element.textContent = supplant("{{js_format|safe}}", event.data);
-          /*
-             TODO  Filter kinds of events
-          */
-    })
+    });
   })(Telegraphy);
 </script>
