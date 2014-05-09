@@ -81,21 +81,27 @@ def telegraphy_event_prefix(context):
     return settings.TELEGRAPHY_EVENT_PREFIX
 
 
-@register.simple_tag(takes_context=True)
-def rt_label(context, model, field, element='div', classes='', id=None):
+@register.simple_tag()
+def rt_label(model, field, element='div', classes='', id=None):
     event = get_related_event(model)
     value = getattr(model, field)
     if id is None:
         id = str(uuid.uuid4()) # Something better ?
 
+    js_context = {
+        "id": id,
+        "eventName": event.name,
+        "field": field,
+        "filter": {
+            "pk": model.pk,
+        },
+    }
     context = {
         "id": id,
         "element": element,
         "classes": classes,
-        "event": event,
         "value": value,
-        "model": model,
-        "field": field
+        "js_context": json.dumps(js_context),
     }
 
     return render_to_string('django_telegraphy/label.html',context)

@@ -1,4 +1,5 @@
-(function (Telegraphy, _) {
+/* globals Telegraphy */
+(function (Telegraphy, window, document, undefined) {
     "use strict";
     Telegraphy.utils = {
 
@@ -18,5 +19,16 @@
                 return typeof r === 'string' || typeof r === 'number' ? r : a;
             });
         },
+        /**
+         * Updates a single element, matching by id
+         */
+        updateElementWithField: function (ctx) {
+            var element = document.getElementById(ctx.id);
+            Telegraphy.subscribe(ctx.eventName)
+                .filter(ctx.filter)
+                .onUpdate(function (event) {
+                    element.textContent = event.data[ctx.field];
+                });
+        },
     };
-})(Telegraphy, _);
+})(Telegraphy, window, document);
