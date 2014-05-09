@@ -9,20 +9,11 @@
     /**
      * Add functions to telegrapy
      */
-
-   function supplant(template, o) {
-       return template.replace(/{([^{}]*)}/g, function (a, b) {
-           var r = o[b];
-           return typeof r === 'string' || typeof r === 'number' ? r : a;
-        }
-     );
-   }
-    
     Telegraphy.subscribe("{{event.name}}").onAny(function (event) {
       var baseId = "{{id}}",
           element = document.getElementById(baseId + "_" + event.data.pk);
           console.log(event);
-          element.textContent = supplant("{{js_format|safe}}", event.data);
+          element.textContent = Telegraphy.utils.supplant("{{js_format|safe}}", event.data);
     });
   })(Telegraphy);
 </script>
