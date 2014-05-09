@@ -18,7 +18,6 @@ except ImportError:
     import simple_json as json
 
 
-
 register = template.Library()
 
 
@@ -45,7 +44,7 @@ def telegraphy_scripts(context):
 
     registered_model_events = json.dumps([])
 
-    context =  {
+    context = {
         'TELEGRAPHY_EVENT_PREFIX': settings.TELEGRAPHY_EVENT_PREFIX,
         'TELEGRAPHY_RPC_URI': settings.TELEGRAPHY_RPC_URI,
         'TELEGRAPHY_WS_URL': telegraphy_ws_url(context),
@@ -55,7 +54,8 @@ def telegraphy_scripts(context):
         'CRA_SECRET': None,
     }
 
-    return render_to_string('django_telegraphy/telegraphy_scripts.html',context)
+    return render_to_string(
+        'django_telegraphy/telegraphy_scripts.html', context)
 
 
 @register.simple_tag(takes_context=True)
@@ -86,7 +86,7 @@ def rt_label(model, field, element='div', classes='', id=None):
     event = get_related_event(model)
     value = getattr(model, field)
     if id is None:
-        id = str(uuid.uuid4()) # Something better ?
+        id = str(uuid.uuid4())  # Something better ?
 
     js_context = {
         "id": id,
@@ -104,13 +104,14 @@ def rt_label(model, field, element='div', classes='', id=None):
         "js_context": json.dumps(js_context),
     }
 
-    return render_to_string('django_telegraphy/label.html',context)
+    return render_to_string('django_telegraphy/label.html', context)
 
-@register.simple_tag(takes_context=True)
-def rt_ul(context, models, field=None, format=None, classes='', id=None):
-    #option for adding new models to the list??
 
+@register.simple_tag()
+def rt_ul(models, field=None, format=None, classes='', id=None):
+    # option for adding new models to the list??
     event = get_related_event(models[0])  # What if models is empty?"
+
     if id is None:
         id = str(uuid.uuid4())  # Something better ?
 
@@ -128,15 +129,17 @@ def rt_ul(context, models, field=None, format=None, classes='', id=None):
     for model in models:
         model_dict[model] = format.format(model)
 
-    #Provide parameters of functions inside jsons...
+    js_context = {
+        "id": id,
+        "format": js_format,
+        "eventName": event.name,
+    }
 
     context = {
         "id": id,
         "classes": classes,
-        "event": event,
-        "format": format,
-        "js_format": js_format,
-        "models": model_dict
+        "models": model_dict,
+        "js_context": json.dumps(js_context)
     }
 
     return render_to_string('django_telegraphy/rt_ul.html', context)

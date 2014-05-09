@@ -24,11 +24,38 @@
          */
         updateElementWithField: function (ctx) {
             var element = document.getElementById(ctx.id);
-            Telegraphy.subscribe(ctx.eventName)
+            return Telegraphy.subscribe(ctx.eventName)
                 .filter(ctx.filter)
                 .onUpdate(function (event) {
                     element.textContent = event.data[ctx.field];
                 });
         },
+        /***
+         * Manage a target list
+         */
+        manageList: function (ctx) {
+            // Later explore spawning channels
+            //
+            return Telegraphy.subscribe(ctx.eventName)
+                .onCreate(function (event) {
+                    var element = document.getElementById(ctx.id),
+                        li = document.createElement('li');
+                    li.id = ctx.id + "_" + event.data.pk;
+                    li.textContent = Telegraphy.utils.supplant(
+                        ctx.format, event.data);
+                    element.appendChild(li);
+                })
+                .onUpdate(function (event) {
+                    var element = document.getElementById(
+                        ctx.id + "_" + event.data.pk);
+                    element.textContent = Telegraphy.utils.supplant(
+                        ctx.format, event.data);
+                })
+                .onDelete(function (event) {
+                    var element = document.getElementById(
+                        ctx.id + "_" + event.data.pk);
+                    element.remove();
+                });
+        }
     };
 })(Telegraphy, window, document);

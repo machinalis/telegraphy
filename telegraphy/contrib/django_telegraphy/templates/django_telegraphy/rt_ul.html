@@ -3,17 +3,8 @@
   <li id="{{id}}_{{model.pk}}">{{content}}</li>
 {% endfor %}
 </ul>
-
 <script type="text/javascript">
-  (function(Telegraphy) {
-    /**
-     * Add functions to telegrapy
-     */
-    Telegraphy.subscribe("{{event.name}}").onAny(function (event) {
-      var baseId = "{{id}}",
-          element = document.getElementById(baseId + "_" + event.data.pk);
-          console.log(event);
-          element.textContent = Telegraphy.utils.supplant("{{js_format|safe}}", event.data);
-    });
-  })(Telegraphy);
+(function(Telegraphy) {
+    Telegraphy.utils.manageList({{js_context | safe}});
+})(Telegraphy);
 </script>
