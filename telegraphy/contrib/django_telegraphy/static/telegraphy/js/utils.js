@@ -13,7 +13,7 @@
          *  be changed on future.
          */
         supplant: function (tpl, o) {
-            return template.replace(/{([^{}]*)}/g, function (a, b) {
+            return tpl.replace(/{([^{}]*)}/g, function (a, b) {
                 var r = o[b];
                 return typeof r === 'string' || typeof r === 'number' ? r : a;
             });
