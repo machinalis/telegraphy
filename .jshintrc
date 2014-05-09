@@ -1,0 +1,20 @@
+{
+    "undef": true
+    , "unused": true
+    , "eqeqeq": true
+    , "bitwise": true
+    , "curly": true
+    , "forin": true
+    , "indent": 4
+    , "newcap": true
+    , "nonew": true
+    , "trailing": true
+    , "maxlen": 90
+    , "white": true
+    , "strict": true
+//Relaxation
+    , "browser": true
+    , "jquery": true
+    , "globals": {
+    }
+}
