@@ -6,7 +6,9 @@ Simple Telegraphy Label Example
 {% block content %}
         <h1> Label example </h1>
         {% rt_label model=model field="title" element="h2" %}
-        Count is: {% rt_label model=model field="count" %}
+        <span class="label label-success">
+        Count   {% rt_label model=model field="count" element="span" classes="badge" %}
+        </span>
 
     <div class="alert alert-info">
       <span class="glyphicon glyphicon-info-sign"></span>
