@@ -1,0 +1,19 @@
+<table id="{{id}}"{% if classes %} class="{{classes}}"{% endif %}>
+  <tr>
+  {% for field in fields %}
+  <th>{{field | title }}</th>
+  {% endfor %}
+  </tr>
+{% for pk, row in rows  %}
+<tr id="{{id}}_{{pk}}">
+  {% for cell in row %}
+    <td>{{cell}}</td>
+  {% endfor %}
+  </tr>
+{% endfor %}
+</table>
+<script type="text/javascript">
+$(document).ready(function() {
+  Telegraphy.utils.manageTable({{js_context | safe}});
+});
+</script>

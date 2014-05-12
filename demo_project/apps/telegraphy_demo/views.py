@@ -25,3 +25,16 @@ def list(request):
                       "models": MyModel.objects.all(),
                       "format": "Model '{0.title}' with count '{0.count}'",
                   })
+
+def table(request):
+    for word in ['apples', 'oranges', 'bananas', 'monkeys']:
+        model, created = MyModel.objects.get_or_create(
+            title="Some {0}".format(word)
+            )
+        model.count += 1
+        model.save()
+    return render(request, 'telegraphy_demo/table.html',
+                  {
+                      "models": MyModel.objects.all(),
+                      "fields": ['title', 'description', 'count'],
+                  })

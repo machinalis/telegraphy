@@ -1,0 +1,18 @@
+{% load telegraphy_tags %}
+{% load static %}
+<html>
+    <head>
+        <title>Realtime Table example</title>
+        <script src='{% static "telegraphy_demo/js/jquery-1.10.2.js" %}'></script>
+        {% telegraphy_scripts %}
+        <style>
+        </style>
+    </head>
+    <body>
+        <h1> Table example </h1>
+        {% rt_table models=models fields=fields%}
+        <p>
+          If you load the same page on other tab, will see the rows updating
+        </p>
+    </body>
+</html>

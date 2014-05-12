@@ -56,6 +56,38 @@
                         ctx.id + "_" + event.data.pk);
                     element.remove();
                 });
+        },
+        /**
+         * Manages a table, in a similar fashion as list
+         *
+         */
+        manageTable: function(ctx) {
+            return Telegraphy.subscribe(ctx.eventName)
+                .onCreate(function (event) {
+                    var table = document.getElementById(ctx.id),
+                        tr = document.createElement('tr');
+                        tr.id = ctx.id + "_" + event.data.pk;
+                    Telegraphy.utils.__buildTableRow(ctx, tr, event);
+                    table.appendChild(tr);
+                })
+                .onUpdate(function (event) {
+                    var tr = document.getElementById(
+                        ctx.id + "_" + event.data.pk);
+                    Telegraphy.utils.__buildTableRow(ctx, tr, event);
+                })
+                .onDelete(function (event) {
+                    var element = document.getElementById(
+                        ctx.id + "_" + event.data.pk);
+                    element.remove();
+                })
+        },
+        __buildTableRow: function (ctx, tr, event) {
+            tr.textContent = '';
+            _.each(ctx.fields, function (field) {
+                var td = document.createElement('td');
+                td.textContent = event.data[field];
+                tr.appendChild(td);
+            });
         }
     };
 })(Telegraphy, window, document);

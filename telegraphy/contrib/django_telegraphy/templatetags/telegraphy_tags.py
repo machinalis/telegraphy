@@ -107,10 +107,15 @@ def rt_label(model, field, element='div', classes='', id=None):
     return render_to_string('django_telegraphy/label.html', context)
 
 
+
 @register.simple_tag()
 def rt_ul(models, field=None, format=None, classes='', id=None):
     # option for adding new models to the list??
+    if not models:
+        raise ValueError("models is empty")
+
     event = get_related_event(models[0])  # What if models is empty?"
+
 
     if id is None:
         id = str(uuid.uuid4())  # Something better ?
@@ -143,3 +148,36 @@ def rt_ul(models, field=None, format=None, classes='', id=None):
     }
 
     return render_to_string('django_telegraphy/rt_ul.html', context)
+
+@register.simple_tag()
+def rt_table(models, fields, classes='', id=None):
+    if not models:
+        raise ValueError("models is empty")
+
+    if id is None:
+        id = str(uuid.uuid4())  # Something better ?
+
+    event = get_related_event(models[0])  # What if models is empty?"
+
+    rows = []
+
+    for model in models:
+        data = []
+        for field in fields:
+            data.append(getattr(model, field))
+
+        rows.append((model.pk, data));
+
+    js_context = {
+        "id": id,
+        "eventName": event.name,
+        "fields": fields,
+    }
+    context = {
+        "id":id,
+        "js_context": json.dumps(js_context),
+        "fields": fields,
+        "rows": rows
+    }
+
+    return render_to_string('django_telegraphy/rt_table.html', context)
