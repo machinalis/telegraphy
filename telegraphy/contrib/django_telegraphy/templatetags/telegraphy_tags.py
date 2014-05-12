@@ -174,7 +174,8 @@ def rt_table(models, fields, classes='', id=None):
         "fields": fields,
     }
     context = {
-        "id":id,
+        "id": id,
+        "classes": classes,
         "js_context": json.dumps(js_context),
         "fields": fields,
         "rows": rows
