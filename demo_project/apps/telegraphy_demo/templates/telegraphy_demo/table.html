@@ -6,7 +6,8 @@ Realtime Table example
 {% block content %}
         <h1> Table example </h1>
         {% rt_table models=models fields=fields classes="table table-striped table-hover table-bordered"%}
-        <p>
-          If you load the same page on other tab, will see the rows updating
-        </p>
+    <div class="alert alert-info">
+      <span class="glyphicon glyphicon-info-sign"></span>
+      If you load the same page on other tab, will see the rows updating
+    </div>
 {% endblock content %}

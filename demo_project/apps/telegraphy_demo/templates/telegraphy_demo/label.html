@@ -1,19 +1,15 @@
+{% extends "telegraphy_demo/base.html" %}
 {% load telegraphy_tags %}
-{% load static %}
-<html>
-    <head>
-        <title>Simple Telegraphy Label Example</title>
-        <script src='{% static "telegraphy_demo/js/jquery-1.10.2.js" %}'></script>
-        {% telegraphy_scripts %}
-        <style>
-        </style>
-    </head>
-    <body>
+{% block title %}
+Simple Telegraphy Label Example
+{% endblock title %}
+{% block content %}
         <h1> Label example </h1>
-        {% rt_label model=model field="title" element="h1" %}
+        {% rt_label model=model field="title" element="h2" %}
         Count is: {% rt_label model=model field="count" %}
-        <p>
-          If you load on other page, count is updated!
-        </p>
-    </body>
-</html>
+
+    <div class="alert alert-info">
+      <span class="glyphicon glyphicon-info-sign"></span>
+      If you load the same page on other tab, will see the label updating
+    </div>
+{% endblock content %}

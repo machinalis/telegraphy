@@ -1,19 +1,14 @@
+{% extends "telegraphy_demo/base.html" %}
 {% load telegraphy_tags %}
-{% load static %}
-<html>
-    <head>
-        <title>Simple Telegraphy List Example</title>
-        <script src='{% static "telegraphy_demo/js/jquery-1.10.2.js" %}'></script>
-        {% telegraphy_scripts %}
-        <style>
-        </style>
-    </head>
-    <body>
-        <h1> List example </h1>
-        {% rt_ul models=models format=format%}
+{% block title %}
+Simple Telegraphy List Example
+{% endblock title %}
+{% block content %}
+    <h1> List example </h1>
+    {% rt_ul models=models format=format%}
 
-        <p>
-          If you load the same page on other tab, will see the rows updating
-        </p>
-    </body>
-</html>
+    <div class="alert alert-info">
+      <span class="glyphicon glyphicon-info-sign"></span>
+      If you load the same page on other tab, will see the rows updating
+    </div>
+{% endblock content %}

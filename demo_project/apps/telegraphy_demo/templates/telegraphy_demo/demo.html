@@ -1,13 +1,13 @@
-<html>
-    <head>
-        <title>Welcome to telegraphy</title>
+{% extends "telegraphy_demo/base.html" %}
+{% block title %}
+Welcome to telegraphy
+{% endblock title %}
+{% block content %}
 
-    </head>
-    <body>
         <h1>Welcome to Telegraphy demo app</h1>
         <p>
             We've bundled some examples to understand what you can do with
-            telegrephy in your projects.</p>
+            telegraphy in your projects.</p>
         <h2>Available demos</h2>
         <ul>
             <li><a href="./simple">A simple example</a></li>
@@ -15,6 +15,17 @@
         <ul>
             <li><a href="./change_tracker/">Track model changes</a></li>
         </ul>
+        <h2> Realtime UI components </h2>
+        <ul>
+            <li><a href="./ui/label">Label</a></li>
+        </ul>
+        <ul>
+            <li><a href="./ui/rt_ul">Unsorted List</a></li>
+        </ul>
+        <ul>
+            <li><a href="./ui/rt_table">Table</a></li>
+        </ul>
+
 
         <h2>Documentation</h2>
         <p>
@@ -28,6 +39,4 @@
                 Github project
             </a>
         </p>
-    </body>
-
-</html>
+{% endblock content %}
