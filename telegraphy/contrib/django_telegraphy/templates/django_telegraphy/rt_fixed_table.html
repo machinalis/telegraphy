@@ -1,0 +1,8 @@
+{% extends 'django_telegraphy/rt_table.html' %}
+{% block script %}
+<script type="text/javascript">
+$(document).ready(function() {
+  Telegraphy.utils.manageFixedTable({{js_context | safe}});
+});
+</script>
+{% endblock script %}

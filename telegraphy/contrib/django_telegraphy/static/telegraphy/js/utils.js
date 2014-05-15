@@ -1,4 +1,4 @@
-/* globals Telegraphy */
+/* globals Telegraphy, _ */
 (function (Telegraphy, window, document, undefined) {
     "use strict";
     Telegraphy.utils = {
@@ -51,36 +51,39 @@
                     element.textContent = Telegraphy.utils.supplant(
                         ctx.format, event.data);
                 })
-                .onDelete(function (event) {
-                    var element = document.getElementById(
-                        ctx.id + "_" + event.data.pk);
-                    element.remove();
-                });
+                .onDelete(_.bind(this.__deleteElement, ctx));
         },
         /**
          * Manages a table, in a similar fashion as list
          *
          */
-        manageTable: function(ctx) {
+        manageTable: function (ctx) {
             return Telegraphy.subscribe(ctx.eventName)
-                .onCreate(function (event) {
-                    var table = document.getElementById(ctx.id),
-                        tr = document.createElement('tr');
-                        tr.id = ctx.id + "_" + event.data.pk;
-                    Telegraphy.utils.__buildTableRow(ctx, tr, event);
-                    table.children[0].appendChild(tr);
-                })
-                .onUpdate(function (event) {
-                    var tr = document.getElementById(
-                        ctx.id + "_" + event.data.pk);
-                    Telegraphy.utils.__buildTableRow(ctx, tr, event);
-                })
-                .onDelete(function (event) {
-                    var element = document.getElementById(
-                        ctx.id + "_" + event.data.pk);
-                    element.remove();
-                })
+                .onCreate(_.bind(this.__addRow, ctx))
+                .onUpdate(_.bind(this.__updateRow, ctx))
+                .onDelete(_.bind(this.__deleteElement, ctx));
         },
+
+        manageFilteredTable: function (ctx) {
+            return Telegraphy.subscribe(ctx.eventName).filter(ctx.filter)
+                .onCreate(_.bind(this.__addRow, ctx))
+                .onUpdate(_.bind(this.__updateRow, ctx))
+                .onDelete(_.bind(this.__deleteElement, ctx));
+        },
+
+        manageExcludedTable: function (ctx) {
+            return Telegraphy.subscribe(ctx.eventName).exclude(ctx.exclude)
+                .onCreate(_.bind(this.__addRow, ctx))
+                .onUpdate(_.bind(this.__updateRow, ctx))
+                .onDelete(_.bind(this.__deleteElement, ctx));
+        },
+
+        manageFixedTable: function (ctx) {
+            return Telegraphy.subscribe(ctx.eventName).filter({pk__in: ctx.pks})
+                .onUpdate(_.bind(this.__updateRow, ctx))
+                .onDelete(_.bind(this.__deleteElement, ctx));
+        },
+
         __buildTableRow: function (ctx, tr, event) {
             tr.textContent = '';
             _.each(ctx.fields, function (field) {
@@ -88,6 +91,30 @@
                 td.textContent = event.data[field];
                 tr.appendChild(td);
             });
+        },
+
+        /**
+         * Adds a new row to a table, has to be called, binded to config ctx
+         */
+        __addRow: function (event) {
+            var table = document.getElementById(this.id),
+                tr = document.createElement('tr');
+            tr.id = this.id + "_" + event.data.pk;
+            Telegraphy.utils.__buildTableRow(this, tr, event);
+            table.children[0].appendChild(tr);
+        },
+        __updateRow: function (event) {
+            var tr = document.getElementById(
+                    this.id + "_" + event.data.pk);
+            Telegraphy.utils.__buildTableRow(this, tr, event);
+        },
+        __deleteElement: function (event) {
+            var element = document.getElementById(
+                    this.id + "_" + event.data.pk);
+            element.remove();
+            if (this.pks) {
+                _.remove(this.pks, function (value) {return value===event.data.pk})
+            }
         }
     };
 })(Telegraphy, window, document);

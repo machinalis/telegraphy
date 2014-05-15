@@ -1,16 +1,22 @@
 """Template tags for ui components"""
 
 import uuid
-from telegraphy.contrib.django_telegraphy.events import get_related_event
+from functools import wraps
+
 from django import template
 from django.template.loader import render_to_string
-from functools import wraps
+from telegraphy.contrib.django_telegraphy.events import (
+    class_related_event,
+    instance_related_event)
+
 try:
     import json
 except ImportError:
     import simple_json as json
 
 register = template.Library()
+
+# ---------------------- Utility Functions -----------------------
 
 
 def render_for(f, context):
@@ -19,11 +25,12 @@ def render_for(f, context):
     return render_to_string(tpl, context)
 
 
-def defaults_and_render(f):
+def ui(f):
     """
         Decorator to provide the pattern and default arguments for all
         the ui tags.
     """
+    @register.simple_tag
     @wraps(f)
     def inner(*args, **kwargs):
         id = kwargs.setdefault('id', str(uuid.uuid4()))
@@ -35,12 +42,47 @@ def defaults_and_render(f):
     return inner
 
 
-@register.simple_tag
-@defaults_and_render
+def table_rows_from_models(fields, models):
+    """Builds a data structure easy to render inside a table"""
+    rows = []
+    for model in models:
+        data = []
+        for field in fields:
+            data.append(getattr(model, field))
+
+        rows.append((model.pk, data))
+
+    return rows
+
+
+def build_table_context(id, fields, event, models, **kwargs):
+
+    rows = table_rows_from_models(fields, models)
+    js_context = {
+        "id": id,
+        "eventName": event.name,
+        "fields": fields,
+        "pks": [model.pk for model in models],
+    }
+    if 'filter' in kwargs:
+        js_context['filter'] = kwargs['filter']
+    elif 'exclude' in kwargs:
+        js_context['exclude'] = kwargs['exclude']
+
+    context = {
+        "js_context": json.dumps(js_context),
+        "fields": fields,
+        "rows": rows
+    }
+    return context
+
+
+# ------------------------ Template Tags -------------------------
+@ui
 def rt_label(model, field, element='div', **kwargs):
     """Creates a DOM element, related to a single model"""
 
-    event = get_related_event(model)
+    event = instance_related_event(model)
     value = getattr(model, field)
 
     js_context = {
@@ -60,8 +102,7 @@ def rt_label(model, field, element='div', **kwargs):
     return context
 
 
-@register.simple_tag
-@defaults_and_render
+@ui
 def rt_ul(models, field=None, format=None, **kwargs):
     """
     Creates an unsorted list, of models, creating each li, based on field
@@ -71,7 +112,7 @@ def rt_ul(models, field=None, format=None, **kwargs):
     if not models:
         raise ValueError("models is empty")
 
-    event = get_related_event(models[0])  # What if models is empty?"
+    event = instance_related_event(models[0])  # What if models is empty?"
 
     if field and format:
         raise ValueError("You have to provide field or format, no both")
@@ -101,32 +142,40 @@ def rt_ul(models, field=None, format=None, **kwargs):
     return context
 
 
-@register.simple_tag
-@defaults_and_render
-def rt_table(models, fields, **kwargs):
+@ui
+def rt_fixed_table(models, fields, **kwargs):
+    """Represents a fixed table"""
     if not models:
         raise ValueError("models is empty")
 
-    event = get_related_event(models[0])  # What if models is empty?"
+    event = instance_related_event(models[0])  # What if models is empty?"
 
-    rows = []
+    return build_table_context(kwargs['id'], fields, event, models)
 
-    for model in models:
-        data = []
-        for field in fields:
-            data.append(getattr(model, field))
 
-        rows.append((model.pk, data))
+@ui
+def rt_table(model_class, fields, **kwargs):
+    """A table that show everything"""
+    model_class = type(model_class)     # Django creates a instance
+                                        # on argument resolution
+    models = model_class.objects.all()
+    event = class_related_event(model_class)
+    return build_table_context(kwargs['id'], fields, event, models)
 
-    js_context = {
-        "id": kwargs['id'],
-        "eventName": event.name,
-        "fields": fields,
-    }
-    context = {
-        "js_context": json.dumps(js_context),
-        "fields": fields,
-        "rows": rows
-    }
 
-    return context
+@ui
+def rt_filtered_table(model_class, fields, filter, **kwargs):
+    model_class = type(model_class)
+    models = model_class.objects.filter(**filter)
+    event = class_related_event(model_class)
+    return build_table_context(
+        kwargs['id'], fields, event, models, filter=filter)
+
+
+@ui
+def rt_excluded_table(model_class, fields, filter, **kwargs):
+    model_class = type(model_class)
+    models = model_class.objects.exclude(**filter)
+    event = class_related_event(model_class)
+    return build_table_context(
+        kwargs['id'], fields, event, models, exclude=filter)

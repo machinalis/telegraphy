@@ -35,6 +35,10 @@ def table(request):
         model.save()
     return render(request, 'telegraphy_demo/table.html',
                   {
-                      "models": MyModel.objects.all(),
+                      "model_class": MyModel,
+                      "models": MyModel.objects.filter(title__icontains='bananas'),
                       "fields": ['title', 'description', 'count'],
+                      "filter": {
+                        'title__istartswith': 'some'
+                      }
                   })

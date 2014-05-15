@@ -139,17 +139,15 @@
         exact: function (field, value, obj) {
             return obj[field] === value;
         },
- /*       iexact: function (field, value, obj) {
-            return
+        iexact: function (field, value, obj) {
+            return obj[field].toLowerCase() === value.toLowerCase();
         },
         contains: function (field, value, obj) {
-
+            return _.str.include(obj[field], value);
         },
         icontains: function (field, value, obj) {
-
+            return _.str.include(obj[field].toLowerCase(), value.toLowerCase());
         },
-
-*/
         in: function (field, value_list, obj) {
             return _.contains(value_list, obj[field]);
         },
@@ -165,25 +163,33 @@
         lte: function (field, value, obj) {
             return obj[field] <= value;
         },
-        /*
-        startswith: function (field, value, obj) {
 
+        startswith: function (field, value, obj) {
+            return _.str.startsWith(obj[field], value);
         },
         istartswith: function (field, value, obj) {
-
+            return _.str.startsWith(
+                    obj[field].toLowerCase(), value.toLowerCase());
         },
         endswith: function (field, value, obj) {
+            return _.str.endsWith(obj[field], value);
         },
         iendswith: function (field, value, obj) {
+            return _.str.endsWith(obj[field].toLowerCase(), value.toLowerCase());
         },
+
         range: function (field, value, obj) {
+            var actual = obj[field];
+            return value[0] <= actual && actual <= value[1];
         },
         regex: function (field, regex, obj) {
+            var expresion = new RegExp(regex);
+            return expresion.test(obj[field]);
         },
         iregex: function (field, regex, obj) {
-
+            var expresion = new RegExp(regex, 'i');
+            return expresion.test(obj[field]);
         },
-         */
     };
 
     var qProto = {
@@ -197,7 +203,7 @@
             var parts = key.split(LOOKUP_SEP);
             if (parts.length === 1) {
                 return _.partial(lookups.exact, parts[0], value);
-            } else if (parts.length === 2) {
+            } else if (parts.length === 2 && lookups[parts[1]] !== undefined) {
                 return _.partial(lookups[parts[1]], parts[0], value);
             } else {
                 throw new Error("Invalid lookup:" + key);
