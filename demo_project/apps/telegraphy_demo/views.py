@@ -42,3 +42,19 @@ def table(request):
                         'title__istartswith': 'some'
                       }
                   })
+
+def progress(request):
+    models = []
+    for n in xrange(1, 6):
+        model, created = MyModel.objects.get_or_create(
+            title="Level {0}".format(n)
+            )
+        model.count += n * 2
+        model.save()
+        models.append(model)
+
+    return render(request, 'telegraphy_demo/progress.html', {
+        'models': models,
+        'field': 'count',
+        'max': 100,
+    })

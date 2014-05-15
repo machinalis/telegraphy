@@ -1,0 +1,17 @@
+{% extends "telegraphy_demo/base.html" %}
+{% load telegraphy_ui %}
+{% block title %}
+Realtime Table example
+{% endblock title %}
+{% block content %}
+<h1> Table examples </h1>
+{% for model in models %}
+  <h2>{{model.title}}</h2>
+  {% rt_progress_bar model=model field=field max=max suffix=" Ocurrences"%}
+{% endfor %}
+    <div class="alert alert-info">
+      <span class="glyphicon glyphicon-info-sign"></span>
+      If you load the same page on other tab, will see the bars updating
+    </div>
+
+{% endblock content %}

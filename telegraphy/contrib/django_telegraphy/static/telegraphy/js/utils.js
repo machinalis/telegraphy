@@ -113,8 +113,24 @@
                     this.id + "_" + event.data.pk);
             element.remove();
             if (this.pks) {
-                _.remove(this.pks, function (value) {return value===event.data.pk})
+                _.remove(this.pks, function (value) {return value === event.data.pk; });
             }
+        },
+        /**
+         * Manages a bootstrap progress bar
+         */
+        manageProgressBar: function (ctx) {
+            var $element = $('#' + ctx.id);
+            return Telegraphy.subscribe(ctx.eventName)
+                .filter(ctx.filter)
+                .onUpdate(function (event) {
+                    var value = event.data[ctx.field],
+                        percentage = value * 100 / ctx.max;
+                    $element.text(value + ctx.suffix)
+                        .css({width: percentage + "%"})
+                        .attr('aria-valuenow', value);
+                });
+
         }
     };
 })(Telegraphy, window, document);

@@ -1,13 +1,13 @@
 """Template tags for ui components"""
+from __future__ import division
 
 import uuid
 from functools import wraps
 
 from django import template
 from django.template.loader import render_to_string
-from telegraphy.contrib.django_telegraphy.events import (
-    class_related_event,
-    instance_related_event)
+from telegraphy.contrib.django_telegraphy.events import (class_related_event,
+                                                         instance_related_event)
 
 try:
     import json
@@ -179,3 +179,30 @@ def rt_excluded_table(model_class, fields, filter, **kwargs):
     event = class_related_event(model_class)
     return build_table_context(
         kwargs['id'], fields, event, models, exclude=filter)
+
+
+@ui
+def rt_progress_bar(model, field, max=100, suffix='', **kwargs):
+    """Renders a bootstrap progress bar"""
+
+    event = instance_related_event(model)
+    value = getattr(model, field)
+
+    js_context = {
+        "id": kwargs['id'],
+        "eventName": event.name,
+        "field": field,
+        "filter": {
+            "pk": model.pk,
+        },
+        "max": max,
+        "suffix": suffix,
+    }
+    context = {
+        "value": value,
+        "percentage": value * 100 / max,
+        "js_context": json.dumps(js_context),
+        "suffix": suffix,
+    }
+
+    return context
