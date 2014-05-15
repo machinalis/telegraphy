@@ -1,13 +1,14 @@
 {% extends "telegraphy_demo/base.html" %}
 {% load telegraphy_ui %}
 {% block title %}
-Realtime Table example
+Realtime Progress Bar
 {% endblock title %}
 {% block content %}
 <h1> Table examples </h1>
 {% for model in models %}
   <h2>{{model.title}}</h2>
-  {% rt_progress_bar model=model field=field max=max suffix=" Ocurrences"%}
+  {%  cycle "progress-bar-success" "progress-bar-info" "progress-bar-warning" "progress-bar-danger" as extra_class silent%}
+  {% rt_progress_bar model=model field=field max=max suffix=" Ocurrences" classes=extra_class %}
 {% endfor %}
     <div class="alert alert-info">
       <span class="glyphicon glyphicon-info-sign"></span>
