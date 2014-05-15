@@ -68,7 +68,7 @@
                         tr = document.createElement('tr');
                         tr.id = ctx.id + "_" + event.data.pk;
                     Telegraphy.utils.__buildTableRow(ctx, tr, event);
-                    table.appendChild(tr);
+                    table.children[0].appendChild(tr);
                 })
                 .onUpdate(function (event) {
                     var tr = document.getElementById(
