@@ -26,6 +26,7 @@ def list(request):
                       "format": "Model '{0.title}' with count '{0.count}'",
                   })
 
+
 def table(request):
     for word in ['apples', 'oranges', 'bananas', 'monkeys']:
         model, created = MyModel.objects.get_or_create(
@@ -36,12 +37,14 @@ def table(request):
     return render(request, 'telegraphy_demo/table.html',
                   {
                       "model_class": MyModel,
-                      "models": MyModel.objects.filter(title__icontains='bananas'),
+                      "models": MyModel.objects.filter(
+                          title__icontains='bananas'),
                       "fields": ['title', 'description', 'count'],
                       "filter": {
-                        'title__istartswith': 'some'
+                          'title__istartswith': 'some'
                       }
                   })
+
 
 def progress(request):
     models = []
@@ -58,3 +61,14 @@ def progress(request):
         'field': 'count',
         'max': 100,
     })
+
+
+def led(request):
+    model, created = MyModel.objects.get_or_create(
+        title="Led")
+    model.description = 'off'
+    model.count += 1
+    model.save()
+    return render(request,
+                  'telegraphy_demo/led.html',
+                  {"model": model})

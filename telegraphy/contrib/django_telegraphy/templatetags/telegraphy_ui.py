@@ -206,3 +206,24 @@ def rt_progress_bar(model, field, max=100, suffix='', **kwargs):
     }
 
     return context
+
+@ui
+def rt_led(model, field, on_value, **kwargs):
+    event = instance_related_event(model)
+    value = getattr(model, field)
+
+    js_context = {
+        "id": kwargs['id'],
+        "eventName": event.name,
+        "field": field,
+        "filter": {
+            "pk": model.pk,
+        },
+        "onValue": on_value,
+    }
+    context = {
+        "is_on": on_value == value,
+        "js_context": json.dumps(js_context),
+    }
+
+    return context

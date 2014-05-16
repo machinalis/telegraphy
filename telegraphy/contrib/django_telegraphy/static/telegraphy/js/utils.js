@@ -131,6 +131,31 @@
                         .attr('aria-valuenow', value);
                 });
 
+        },
+        /**
+         * Manages a bootstrap progress bar
+         */
+        manageLed: function (ctx) {
+            var $element = $('#' + ctx.id + " .glyphicon");
+            return Telegraphy.subscribe(ctx.eventName)
+                .filter(ctx.filter)
+                .onUpdate(function (event) {
+                    if (event.data[ctx.field] === ctx.onValue) {
+                        $element
+                            .removeClass('glyphicon-remove')
+                            .addClass('glyphicon-ok');
+                    } else {
+                        $element
+                            .removeClass('glyphicon-ok')
+                            .addClass('glyphicon-remove');
+                    }
+                })
+                .onDelete(function () {
+                    $element
+                        .removeClass('glyphicon-ok')
+                        .removeClass('glyphicon-remove')
+                        .addClass('glyphicon-exclamation-sign');
+                });
         }
     };
 })(Telegraphy, window, document);

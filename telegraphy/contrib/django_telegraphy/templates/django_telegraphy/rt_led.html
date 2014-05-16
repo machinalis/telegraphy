@@ -1,0 +1,9 @@
+<span id="{{id}}"class="badge {{classes}}">
+  <span class="glyphicon glyphicon-{% if is_on %}ok{% else %}remove{% endif %}"
+    ></span>
+</span>
+<script type="text/javascript">
+$(document).ready(function() {
+  Telegraphy.utils.manageLed({{js_context | safe}});
+});
+</script>
