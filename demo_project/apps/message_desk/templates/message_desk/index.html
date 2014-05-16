@@ -1,0 +1,23 @@
+{% extends "message_desk/base.html" %}
+{% load telegraphy_ui %}
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <h1> Message Desk </h1>
+  <div>
+</div>
+<div class="row">
+  <div class="col-md-4">
+    <h2> Subscribed </h2>
+      {% rt_filtered_table id="my-subscriptions" model_class=model_class filter=subs_filter fields=fields classes="table table-striped table-hover table-bordered"%}
+  </div>
+  <div class="col-md-4">
+    <h2> All </h2>
+      {% rt_table id="all-messages" model_class=model_class fields=fields classes="table table-striped table-hover table-bordered"%}
+  </div>
+  <div class="col-md-4">
+    <h2> Your Messages </h2>
+      {% rt_filtered_table id="my-messages" model_class=model_class filter=own_filter fields=fields classes="table table-striped table-hover table-bordered"%}
+  </div>
+</div>
+{% endblock content %}

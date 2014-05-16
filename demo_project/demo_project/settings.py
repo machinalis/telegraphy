@@ -125,6 +125,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'telegraphy.contrib.django_telegraphy',
     'apps.telegraphy_demo',
+    'apps.message_desk',
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
