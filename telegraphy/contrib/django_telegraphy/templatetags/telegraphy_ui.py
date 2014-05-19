@@ -8,6 +8,7 @@ from django import template
 from django.template.loader import render_to_string
 from telegraphy.contrib.django_telegraphy.events import (class_related_event,
                                                          instance_related_event)
+from ..widgets import RtLabel
 
 try:
     import json
@@ -78,28 +79,11 @@ def build_table_context(id, fields, event, models, **kwargs):
 
 
 # ------------------------ Template Tags -------------------------
-@ui
+@register.simple_tag
 def rt_label(model, field, element='div', **kwargs):
     """Creates a DOM element, related to a single model"""
-
-    event = instance_related_event(model)
-    value = getattr(model, field)
-
-    js_context = {
-        "id": kwargs['id'],
-        "eventName": event.name,
-        "field": field,
-        "filter": {
-            "pk": model.pk,
-        },
-    }
-    context = {
-        "element": element,
-        "value": value,
-        "js_context": json.dumps(js_context),
-    }
-
-    return context
+    label = RtLabel(model, field, element, **kwargs)
+    return label.render()
 
 
 @ui
