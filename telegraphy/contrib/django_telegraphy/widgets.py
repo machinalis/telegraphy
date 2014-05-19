@@ -116,10 +116,69 @@ class RtLabel(RealtimeWidget):
     def context(self):
         base = super(RtLabel, self).context()
         base.update({
-            'element': self.field,
+            'element': self.element,
             'value': self.extract_value(self.model, self.field),
             'filter': {
                 "pk": self.model.pk,
             },
         })
         return base
+
+
+class RtUl(RealtimeWidget):
+    pass
+
+
+class RtBaseTable(RealtimeWidget):
+
+    def __init__(self, models, fields, **kwargs):
+        super(RtBaseTable, self).__init__(**kwargs)
+        self.fields = fields
+        self.models = models
+
+    def js_context(self):
+        base = super(RtBaseTable, self).js_context()
+        base.update({
+            "pks": [model.pk for model in self.models],
+            "fields": self.fields,
+        })
+        return base
+
+    def context(self):
+        base = super(RtBaseTable, self).context()
+        base.update({
+            "fields": self.fields,
+            "rows": self.table_rows(),
+        })
+        return base
+
+    def table_rows(self):
+        """Builds a data structure easy to render inside a table"""
+        rows = []
+        for model in self.models:
+            data = []
+            for field in self.fields:
+                data.append(getattr(model, field))
+
+            rows.append((model.pk, data))
+
+        return rows
+
+
+class RtFixedTable(RtBaseTable):
+
+    def event_name(self):
+        event = instance_related_event(self.models[0])
+        return event.name
+
+
+class RtTable(RtBaseTable):
+
+    def __init__(self, model_class, fields, **kwargs):
+        self.model_class = model_class
+        models = model_class.objects.all()
+        super(RtTable, self).__init__(models, fields, **kwargs)
+
+    def event_name(self):
+        event = class_related_event(self.model_class)
+        return event.name

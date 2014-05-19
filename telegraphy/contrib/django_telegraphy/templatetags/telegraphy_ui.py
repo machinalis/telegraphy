@@ -8,7 +8,7 @@ from django import template
 from django.template.loader import render_to_string
 from telegraphy.contrib.django_telegraphy.events import (class_related_event,
                                                          instance_related_event)
-from ..widgets import RtLabel
+from ..widgets import RtLabel, RtFixedTable, RtTable
 
 try:
     import json
@@ -126,26 +126,20 @@ def rt_ul(models, field=None, format=None, **kwargs):
     return context
 
 
-@ui
+@register.simple_tag
 def rt_fixed_table(models, fields, **kwargs):
     """Represents a fixed table"""
-    if not models:
-        raise ValueError("models is empty")
-
-    event = instance_related_event(models[0])  # What if models is empty?"
-
-    return build_table_context(kwargs['id'], fields, event, models)
+    fixed_table = RtFixedTable(models, fields)
+    return fixed_table.render()
 
 
-@ui
+@register.simple_tag
 def rt_table(model_class, fields, **kwargs):
     """A table that show everything"""
     model_class = type(model_class)     # Django creates a instance
                                         # on argument resolution
-    models = model_class.objects.all()
-    event = class_related_event(model_class)
-    return build_table_context(kwargs['id'], fields, event, models)
-
+    table =  RtTable(model_class, fields, **kwargs)
+    return table.render()
 
 @ui
 def rt_filtered_table(model_class, fields, filter, **kwargs):
