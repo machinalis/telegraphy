@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import MyModel
-
+from telegraphy.contrib.django_telegraphy.widgets import RtLabel, RtFixedTable
 
 def label(request):
     model, created = MyModel.objects.get_or_create(
@@ -8,9 +8,13 @@ def label(request):
         description="Some description")
     model.count += 1
     model.save()
+    rt_label_title =  RtLabel(model, 'title', element='h2')
     return render(request,
                   'telegraphy_demo/label.html',
-                  {"model": model})
+                  {
+                      "model": model,
+                      "rt_label_title": rt_label_title,
+                  })
 
 
 def list(request):
@@ -34,12 +38,16 @@ def table(request):
             )
         model.count += 1
         model.save()
+    fields = ['title', 'description', 'count']
+    models = MyModel.objects.filter(title__icontains='bananas')
+    classes = "table table-striped table-hover table-bordered"
+    fixed_table =  RtFixedTable(models, fields, classes=classes)
     return render(request, 'telegraphy_demo/table.html',
                   {
                       "model_class": MyModel,
-                      "models": MyModel.objects.filter(
-                          title__icontains='bananas'),
-                      "fields": ['title', 'description', 'count'],
+                      "fixed_table": fixed_table,
+                      "models": models,
+                      "fields": fields,
                       "filter": {
                           'title__istartswith': 'some'
                       }

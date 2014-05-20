@@ -5,7 +5,7 @@ Simple Telegraphy Label Example
 {% endblock title %}
 {% block content %}
         <h1> Label example </h1>
-        {% rt_label model=model field="title" element="h2" %}
+        {{ rt_label_title.render }}
         <span class="label label-success">
         Count   {% rt_label model=model field="count" element="span" classes="badge" %}
         </span>

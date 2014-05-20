@@ -20,7 +20,7 @@ Realtime Table example
       </div>
     </div>
     <div class="col-md-8">
-      {% rt_table model_class=model_class fields=fields classes="table table-striped table-hover table-bordered"%}
+      {% rt_table id="MyTabla" model_class=model_class fields=fields classes="table table-striped table-hover table-bordered"%}
     </div>
   </div>
   <div class="col-md-12">
@@ -60,7 +60,7 @@ Realtime Table example
       </p>
     </div>
     <div class="col-md-8">
-      {% rt_fixed_table models=models fields=fields classes="table table-striped table-hover table-bordered"%}
+      {{ fixed_table.render }}
     </div>
   </div>
 
