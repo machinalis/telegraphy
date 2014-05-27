@@ -1,0 +1,7 @@
+<{{element}} id="{{id}}" {%if classes%}class="{{classes}}"{% endif %}>{{value}}</{{element}}>
+<script type="text/javascript">
+(function(Telegraphy) {
+    var ctx = {{js_context | safe}};
+    Telegraphy.utils.updateElementWithField(ctx);
+})(Telegraphy);
+</script>

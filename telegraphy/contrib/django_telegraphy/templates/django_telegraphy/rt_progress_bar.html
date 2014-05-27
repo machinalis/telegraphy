@@ -1,0 +1,10 @@
+<div class="progress">
+  <div id="{{id}}" class="progress-bar {{classes}}" role="progressbar" aria-valuenow="{{value}}" aria-valuemin="0" aria-valuemax="{{max}}" style="width: {{percentage}}%;">
+    {{value}}{{suffix}}
+  </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function() {
+  Telegraphy.utils.manageProgressBar({{js_context | safe}});
+});
+</script>

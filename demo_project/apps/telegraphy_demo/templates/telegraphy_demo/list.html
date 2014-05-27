@@ -1,0 +1,14 @@
+{% extends "telegraphy_demo/base.html" %}
+{% load telegraphy_ui %}
+{% block title %}
+Simple Telegraphy List Example
+{% endblock title %}
+{% block content %}
+    <h1> List example </h1>
+    {% rt_ul models=models format=format%}
+
+    <div class="alert alert-info">
+      <span class="glyphicon glyphicon-info-sign"></span>
+      If you load the same page on other tab, will see the rows updating
+    </div>
+{% endblock content %}

@@ -25,12 +25,24 @@ def get_gateway_proxy():
 
 # This list keeps a possibly out-of-data registry of registered events.
 # TODO: a method to update the list through the Gateway
-_events = []
+_events = {}
+
+
 def get_registered_events():
     """Return the list of currently registered events."""
     # TODO: add an optional parameter to update the list before returning.
     # TODO: Such update shall be through the Gateway.
-    return _events
+    return _events.values()
+
+
+def instance_related_event(instance):
+    """Return the event instance related to given instance"""
+    return class_related_event(type(instance))
+
+
+def class_related_event(cls):
+    """Returns the event class related to given class"""
+    return _events[cls]
 
 
 class BaseEventModel(object):
@@ -117,7 +129,7 @@ class BaseEventModel(object):
             post_delete.connect(self.on_model_delete, sender=sender)
 
         if self.operations:
-            _events.append(self)
+            _events[self.model] = self
 
     def send_to_gateway(self, instance, event_type):
         """

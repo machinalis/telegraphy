@@ -1,0 +1,10 @@
+<ul id="{{id}}"{% if classes %} class="{{classes}}"{% endif %}>
+{% for model, content in models.iteritems %}
+  <li id="{{id}}_{{model.pk}}">{{content}}</li>
+{% endfor %}
+</ul>
+<script type="text/javascript">
+(function(Telegraphy) {
+    Telegraphy.utils.manageList({{js_context | safe}});
+})(Telegraphy);
+</script>

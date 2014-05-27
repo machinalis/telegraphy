@@ -1,23 +1,19 @@
 """Template tags for Django templates"""
-
-from django import template
-
-from django.core.exceptions import ImproperlyConfigured
 from socket import error as SocketError
-import errno
 
-from telegraphy.contrib.django_telegraphy import settings
-from telegraphy.contrib.django_telegraphy import events
+import errno
+from django import template
+from django.core.exceptions import ImproperlyConfigured
+from django.template.loader import render_to_string
+from telegraphy.contrib.django_telegraphy import events, settings
 from telegraphy.gateway.base import GatewayProxy
 from telegraphy.utils import (build_url_from_settings,
-                              extract_host_from_request,
-                              get_user)
-from django.template.loader import render_to_string
+                              extract_host_from_request, get_user)
+
 try:
     import json
 except ImportError:
     import simple_json as json
-
 
 
 register = template.Library()
@@ -57,7 +53,8 @@ def telegraphy_scripts(context):
         'CRA_SECRET': cra_tokens.secret or 'null',
     }
 
-    return render_to_string('django_telegraphy/telegraphy_scripts.html', context)
+    return render_to_string(
+        'django_telegraphy/telegraphy_scripts.html', context)
 
 
 @register.simple_tag(takes_context=True)

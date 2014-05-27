@@ -1,0 +1,17 @@
+{% extends "telegraphy_demo/base.html" %}
+{% load telegraphy_ui %}
+{% block title %}
+Simple Telegraphy Label Example
+{% endblock title %}
+{% block content %}
+        <h1> Label example </h1>
+        {{ rt_label_title.render }}
+        <span class="label label-success">
+        Count   {% rt_label model=model field="count" element="span" classes="badge" %}
+        </span>
+
+    <div class="alert alert-info">
+      <span class="glyphicon glyphicon-info-sign"></span>
+      If you load the same page on other tab, will see the label updating
+    </div>
+{% endblock content %}

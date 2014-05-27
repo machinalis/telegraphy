@@ -1,0 +1,13 @@
+{% extends "telegraphy_demo/base.html" %}
+{% load telegraphy_ui %}
+{% block title %}
+Led Example
+{% endblock title %}
+{% block content %}
+    <h1> Led example </h1>
+    {% rt_led model=model field='description' on_value='on' %}    
+    <div class="alert alert-info">
+      <span class="glyphicon glyphicon-info-sign"></span>
+      Try changing description to 'off' or 'on' using the admin
+    </div>
+{% endblock content %}

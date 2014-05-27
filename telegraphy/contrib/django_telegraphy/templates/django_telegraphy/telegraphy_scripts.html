@@ -2,7 +2,11 @@
 {# Indented as it would be included in head #}
         <!-- Begin telegraphy_tags -->
         <script src="{% static AUTOBAHN_URL %}"></script>
+        <script src="{% static "telegraphy/js/lodash.compat.min.js" %}"></script>
+        <script src="{% static "telegraphy/js/underscore.string.min.js" %}"></script>
         <script src="{% static "telegraphy/js/telegraphy.js" %}"></script>
+        <script src="{% static "telegraphy/js/channels.js" %}"></script>
+        <script src="{% static "telegraphy/js/utils.js" %}"></script>
         <script>
             Telegraphy.EVENT_URL_PREFIX = '{{ TELEGRAPHY_EVENT_PREFIX }}';
             Telegraphy.RPC_URL_PREFIX = '{{ TELEGRAPHY_RPC_URI }}';
