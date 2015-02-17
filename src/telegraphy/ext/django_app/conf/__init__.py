@@ -24,6 +24,14 @@ else:
     else:
         AUTOBAHN_URL = 'js/autobahn/autobahn.min.js'
 
+PORT = getattr(settings, 'TELEGRAPHY_PORT', 8080)
+WS_URL = getattr(settings, 'TELEGRAPHY_WS_URL', 'wesocket')
+HOST = getattr(settings, 'TELEGRAPHY_HOST', '127.0.0.1')
+
+AUTOBAHN_WS_URL = 'ws://{}:{}/{}'.format(HOST, PORT, WS_URL)
+
+DEBUG = settings.DEBUG
+
 # Crossbar configuration. For django applications this defaults to
 # Django BASE_DIR/.crossbar
 CROSSBAR_DIR = getattr(

@@ -43,7 +43,7 @@ DEFAULT_CONFIG = '''
                      "module": "{{ PROJECT_NAME }}.wsgi",
                      "object": "application"
                   },
-                  "ws": {
+                  "{{ conf.WS_URL }}": {
                      "type": "websocket",
                      "debug": false
                   },
