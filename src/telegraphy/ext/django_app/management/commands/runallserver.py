@@ -22,7 +22,7 @@ class Command(NoArgsCommand):
                     help="Do not collect static", default=False,
                     action='store_true'),
         make_option('-f', '--force', help="Overwrite configuration despite of being "
-                    "up to date"),
+                    "up to date", default=False, action='store_true'),
     ) + NoArgsCommand.option_list
 
     def handle_noargs(self, **options):
