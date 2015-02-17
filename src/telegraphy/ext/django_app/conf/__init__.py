@@ -7,6 +7,9 @@ from django.conf import settings
 import os
 from .templates import DEFAULT_CONFIG
 
+# Same debug information as Django
+CROSSBAR_DEBUG = getattr(settings, 'TELEGRAPHY_CROSSBAR_DEBUG', False)
+
 # Configuration for javascript compression
 USE_MINIFIED_JS = getattr(settings, 'TELEGRAPHY_USE_MINIFIED_JS', False)
 
@@ -30,7 +33,8 @@ HOST = getattr(settings, 'TELEGRAPHY_HOST', '127.0.0.1')
 
 AUTOBAHN_WS_URL = 'ws://{}:{}/{}'.format(HOST, PORT, WS_URL)
 
-DEBUG = settings.DEBUG
+AUTOBAHN_REALM = getattr(settings, 'TELEGRAPHY_AUTOBAHN_REALM', 'realm1')
+
 
 # Crossbar configuration. For django applications this defaults to
 # Django BASE_DIR/.crossbar

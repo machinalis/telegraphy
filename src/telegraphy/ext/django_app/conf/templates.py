@@ -45,7 +45,7 @@ DEFAULT_CONFIG = '''
                   },
                   "{{ conf.WS_URL }}": {
                      "type": "websocket",
-                     "debug": false
+                     "debug": {% if conf.CROSSBAR_DEBUG %}true{%else%}false{%endif%}
                   },
                   "notify": {
                      "type": "pusher",
