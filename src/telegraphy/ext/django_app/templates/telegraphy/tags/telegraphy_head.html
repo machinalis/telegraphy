@@ -1,0 +1,14 @@
+{% load static %}
+
+{% if conf.SERVE_AUTOBAHN %}
+    <script type="text/javascript" src="{% static conf.AUTOBAHN_URL %}"></script>
+{% else %}
+    {# Remotely served #}
+    <script type="text/javascript" src="{{ conf.AUTOBAHN_URL }}"></script>
+{% endif %}
+
+<script type="text/javascript">
+    window.Telegraphy.config = {
+        URL: {{ AUTOBAHN_WS_URL }}
+    };
+</script>
