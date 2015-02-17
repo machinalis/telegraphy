@@ -6,9 +6,12 @@
     {# Remotely served #}
     <script type="text/javascript" src="{{ conf.AUTOBAHN_URL }}"></script>
 {% endif %}
+    <script type="text/javascript" src="{% static "js/telegraphy/telegraphy.js" %}"></script>
 
 <script type="text/javascript">
-    window.Telegraphy.config = {
-        URL: {{ conf.AUTOBAHN_WS_URL }}
-    };
+    <!-- Telegraphy template tag configuration -->
+    window.Telegraphy.WS_URL = "{{ conf.AUTOBAHN_WS_URL }}";
+    window.Telegraphy.DEBUG = {% if conf.DEBUG %}true{%else%}false{%endif%};
+    window.Telegraphy.REALM = "{{ conf.AUTOBAHN_REALM }}";
+    <!-- End of telegraphy template tag configuration -->
 </script>
