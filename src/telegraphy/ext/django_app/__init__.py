@@ -24,6 +24,8 @@ def as_json_embedable_list(a_list):
 
 def get_crossbar_config():
 
+    BASE_URL = getattr(settings, 'BASE_URL', '/')
+
     PROJECT_NAME = os.environ['DJANGO_SETTINGS_MODULE'].split('.')[0]
     template = Template(conf.CROSSBAR_TEMPLATE)
     if conf.SERVE_STATIC and not settings.STATIC_ROOT:
@@ -32,11 +34,14 @@ def get_crossbar_config():
     PYTHON_PATH = as_json_embedable_list(['..'] + get_pythonpath_extensions())
 
     context = Context({
+        # Config object
         'conf': conf,
+        # Some distilled settings
         'PROJECT_NAME': PROJECT_NAME,
         'STATIC_URL': settings.STATIC_URL[1:-1],
         'STATIC_ROOT': os.path.abspath(settings.STATIC_ROOT),
         'PYTHON_PATH': PYTHON_PATH,
+        'BASE_URL': BASE_URL
     })
     result = template.render(context)
     # json.loads(result)

@@ -38,7 +38,7 @@ DEFAULT_CONFIG = '''
                   "port": 8080
                },
                "paths": {
-                  "/": {
+                  "{{ BASE_URL }}": {
                      "type": "wsgi",
                      "module": "{{ PROJECT_NAME }}.wsgi",
                      "object": "application"
