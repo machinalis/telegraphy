@@ -51,11 +51,14 @@ DEFAULT_CONFIG = '''
                      "type": "pusher",
                      "realm": "realm1",
                      "role": "anonymous"
-                  },
+                  }{% if conf.SERVE_STATIC %},
                   "{{ STATIC_URL }}": {
                      "type": "static",
-                     "directory": "{{ STATIC_ROOT }}"
-                  }
+                     "directory": "{{ STATIC_ROOT }}",
+                     "options": {
+                        "enable_directory_listing": true
+                     }
+                  }{% endif %}
                }
             }
          ]

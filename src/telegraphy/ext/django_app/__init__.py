@@ -35,7 +35,7 @@ def get_crossbar_config():
         'conf': conf,
         'PROJECT_NAME': PROJECT_NAME,
         'STATIC_URL': settings.STATIC_URL[1:-1],
-        'STATIC_ROOT': os.path.relpath(settings.STATIC_ROOT, conf.CROSSBAR_CONFIG),
+        'STATIC_ROOT': os.path.abspath(settings.STATIC_ROOT),
         'PYTHON_PATH': PYTHON_PATH,
     })
     result = template.render(context)
