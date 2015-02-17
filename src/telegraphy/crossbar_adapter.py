@@ -53,7 +53,7 @@ def get_crossbar_config_file_contents(config):
 def mkconfig(config, force=False):
     '''Creates crossbar configuration'''
     if not force:
-        if updated_config(config):
+        if is_config_updated(config):
             # Configuration already up to date
             return True
     if not os.path.exists(config.CROSSBAR_DIR):
@@ -64,7 +64,7 @@ def mkconfig(config, force=False):
     return configuration
 
 
-def updated_config(config):
+def is_config_updated(config):
     '''Checks if crossbar cofiguration is up to date.
     @returns False on any error'''
     if not os.path.exists(config.CROSSBAR_DIR):
