@@ -1,0 +1,14 @@
+{% load static %}
+{# Indented as it would be included in head #}
+        <!-- Begin telegraphy_tags -->
+        <script src="{% static AUTOBAHN_URL %}"></script>
+        <script src="{% static "telegraphy/js/telegraphy.js" %}"></script>
+        <script>
+            Telegraphy.EVENT_URL_PREFIX = '{{ TELEGRAPHY_EVENT_PREFIX }}';
+            Telegraphy.RPC_URL_PREFIX = '{{ TELEGRAPHY_RPC_URI }}';
+            Telegraphy.WS_URL = '{{ TELEGRAPHY_WS_URL }}';
+            Telegraphy.REGISTERED_MODEL_EVENTS = '{{ registered_model_events }}';
+            Telegraphy.CRA_KEY = {{ CRA_KEY }};
+            Telegraphy.CRA_SECRET = {{ CRA_SECRET }};
+        </script>
+        <!-- End telegraphy_tags -->

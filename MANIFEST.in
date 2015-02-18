@@ -1,0 +1,7 @@
+include telegraphy/contrib/django/app/static/*
+include requirements.txt
+recursive-include *.html
+recursive-include telegraphy/contrib/django_telegraphy/static *.*
+recursive-include telegraphy/contrib/django_telegraphy/templates *.*
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]

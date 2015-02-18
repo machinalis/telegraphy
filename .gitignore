@@ -1,0 +1,16 @@
+*.pyc
+.idea
+.gitignore
+*~
+local_settings.py
+doc/build/
+.swp
+.swo
+*.sublime-*
+build/*
+dist/*
+*.egg*
+demo_project/demo_db.sqlite3
+*.db
+*.sqlite*
+CACHE

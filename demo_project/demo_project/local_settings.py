@@ -1,0 +1,41 @@
+import logging
+from os import getenv
+from sys import argv
+
+from settings import *
+
+DEVELOPER_ENVIRONMENT = True
+
+try:
+    import django_extensions
+    INSTALLED_APPS += ('django_extensions', )
+except ImportError:
+    pass
+
+ADMINS = (
+    ('Admin', 'admin@example.com'),
+)
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'telegraphy.db',
+    }
+}
+
+INSTALLED_APPS += (
+    # 'django_nose',
+    'django_extensions',
+)
+
+#TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+TESTS_LOGGING_LEVEL = getenv('TESTS_LOGGING_LEVEL', None)
+
+if len(argv) >= 2 and argv[1] == 'test' and TESTS_LOGGING_LEVEL is not None:
+    level = getattr(logging, TESTS_LOGGING_LEVEL, None)
+    if level:
+        logging.disable(level)
+
+TELEGRAPHY_ENGINE = 'telegraphy.gateway.txwamp.TxWAMPGateway'
+

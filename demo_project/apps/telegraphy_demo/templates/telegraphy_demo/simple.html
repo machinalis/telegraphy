@@ -1,0 +1,27 @@
+{% load telegraphy_tags %}
+{% load static %}
+<html>
+    <head>
+        <title>Simple Telegraphy API Example</title>
+        <script src='{% static "telegraphy_demo/js/jquery-1.10.2.js" %}'></script>
+        {% telegraphy_scripts %}
+    </head>
+    <body>
+        <h1>Catching model events!</h1>
+        <ul id="event_catcher"> </ul>
+        <script>
+            (function (){
+                // Protect global namepsace pollution
+                var $event_catcher = $('#event_catcher');
+
+                Telegraphy.register(
+                    'telegraphy_demo.MyModel' , function (tEvent){
+
+                        var new_line = $('<li/>').text(tEvent.name);
+                        $event_catcher.append(new_line);
+                    }
+                );
+            })();
+        </script>
+    </body>
+</html>
