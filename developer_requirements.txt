@@ -1,6 +1,8 @@
 -r requirements.txt
-flake8==2.0
+flake8
 django-nose==1.1
-ipdb==0.8
+ipdb
 mock==1.0.1
 django_extensions==1.1.1
+# To build docs
+sphinx
