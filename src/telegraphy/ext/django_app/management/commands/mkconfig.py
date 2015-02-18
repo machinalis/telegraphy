@@ -15,6 +15,8 @@ class Command(NoArgsCommand):
 
     def handle_noargs(self, **options):
         try:
-            mkconfig(conf, force=options['force'])
+            written_conf = mkconfig(conf, force=options['force'])
+            if options['verbosity'] > 1:
+                print written_conf
         except ImproperlyConfigured as e:
             raise CommandError(e)
