@@ -47,6 +47,9 @@ DEFAULT_CONFIG = '''
                      "type": "websocket",
                      "debug": {% if conf.CROSSBAR_DEBUG %}true{%else%}false{%endif%}
                   },
+                  "{{ conf.LONG_POLL_URL }}": {
+                     "type": "longpoll"
+                  },
                   "notify": {
                      "type": "pusher",
                      "realm": "realm1",

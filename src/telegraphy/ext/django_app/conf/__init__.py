@@ -59,3 +59,6 @@ CROSSBAR_TEMPLATE = getattr(settings, 'TELEGRAPHY_CROSSBAR_TEMPLATE', DEFAULT_CO
 
 # Convenient default for development, note you should use nginx for production
 SERVE_STATIC = getattr(settings, 'TELEGRAPHY_SERVE_STATIC', True)
+
+# TODO: Configure this though global settings
+LONG_POLL_URL = 'longpoll'
