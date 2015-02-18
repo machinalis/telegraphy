@@ -35,7 +35,7 @@ DEFAULT_CONFIG = '''
                "type": "web",
                "endpoint": {
                   "type": "tcp",
-                  "port": 8080
+                  "port": {{ conf.PORT }}
                },
                "paths": {
                   "{{ BASE_URL }}": {

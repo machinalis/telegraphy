@@ -92,3 +92,5 @@ TEMPLATE_DIRS = (
 )
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_content')
+
+TELEGRAPHY_WS_PORT = 9090
