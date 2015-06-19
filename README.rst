@@ -1,3 +1,16 @@
+Disclaimer
+==========
+
+Telegraphy (master) is based on WAMP_ 1.0. We're rewritting it to use a more advanced broker called `crossbar.io`_ for asynchronous operations.
+
+Currentrly development is being made in crossbario_ branch.
+
+.. _WAMP: http://wamp.ws
+
+.. _crossbar.io: http://crossbar.io
+
+.. _crossbario: https://github.com/machinalis/telegraphy/tree/crossbario
+
 Telegraphy
 ==========
 
